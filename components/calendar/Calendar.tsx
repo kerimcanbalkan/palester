@@ -14,7 +14,6 @@ import {
     isToday,
     isAfter,
     format,
-    getMonth,
     eachDayOfInterval,
     startOfMonth,
     endOfMonth,
@@ -34,10 +33,10 @@ export default function Calendar() {
         workouts: [
             new Date('2025-09-28'),
             new Date('2025-09-29'),
-            new Date('2025-10-02'),
+            // new Date('2025-10-02'),
             // new Date('2025-10-03'),
             new Date('2025-10-06'),
-            new Date('2025-10-07'),
+            // new Date('2025-10-07'),
         ],
     }
 
@@ -110,25 +109,32 @@ export default function Calendar() {
                         | 'missed' = 'regular'
 
                     if (isBefore(day, today)) {
-                        mockData.workoutDays.forEach((w) => {
-                            if (format(day, 'EEE').toUpperCase() === w) {
-                                variant = 'missed'
-                                if (!isSameMonth(day, month)) {
-                                    variant = 'oldMissed'
-                                }
-                            } else if (!isSameMonth(day, month)) {
-                                variant = 'oldRest'
-                            } else {
-                                variant = 'rest'
-                            }
-                        })
+                        const dayName = format(day, 'EEE').toUpperCase()
+                        const isWorkoutDay =
+                            mockData.workoutDays.includes(dayName)
+                        const isWorkoutDone = mockData.workouts.some((w) =>
+                            isSameDay(day, w)
+                        )
 
+                        if (isWorkoutDone) {
+                            variant = isSameMonth(day, month)
+                                ? 'completed'
+                                : 'oldCompleted'
+                        } else if (isWorkoutDay) {
+                            variant = isSameMonth(day, month)
+                                ? 'missed'
+                                : 'oldMissed'
+                        } else {
+                            variant = isSameMonth(day, month)
+                                ? 'rest'
+                                : 'oldRest'
+                        }
                         mockData.workouts.forEach((w) => {
                             if (isSameDay(day, w) && isSameMonth(day, month)) {
                                 variant = 'completed'
                             } else if (
                                 isSameDay(day, w) &&
-                                !isSameMonth(day, today)
+                                !isSameMonth(day, month)
                             ) {
                                 variant = 'oldCompleted'
                             }
