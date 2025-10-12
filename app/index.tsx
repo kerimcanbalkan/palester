@@ -9,10 +9,12 @@ import {
 } from 'react-native'
 import Logo from '@/components/Logo'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
+import { useRouter } from 'expo-router'
 import CustomButton from '@/components/CustomButton'
 import Calendar from '@/components/calendar/Calendar'
 
 export default function Index() {
+    const router = useRouter()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -27,7 +29,7 @@ export default function Index() {
             <CustomButton
                 text="Log Workout"
                 onPress={() => {
-                    Alert.alert('button pressed')
+                    router.navigate('/setup/program')
                 }}
                 size={24}
             />

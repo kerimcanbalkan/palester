@@ -84,6 +84,9 @@ function themedStyles(colors: colorType) {
             backgroundColor: colors.bg,
             overflow: 'visible',
             fontFamily: 'OpenSans_400Regular',
+            maxWidth: 430,
+            margin: 'auto',
+            height: '100%',
         },
         loadingContainer: {
             flex: 1,

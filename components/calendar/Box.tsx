@@ -81,6 +81,7 @@ function themedStyles(colors: colorType) {
         container: {
             justifyContent: 'center',
             alignItems: 'center',
+            aspectRatio: 1,
             width: 30,
             height: 30,
             borderRadius: 10,

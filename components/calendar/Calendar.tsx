@@ -13,6 +13,7 @@ import {
     add,
     isToday,
     isAfter,
+    isSameYear,
     format,
     eachDayOfInterval,
     startOfMonth,
@@ -78,7 +79,20 @@ export default function Calendar() {
                     <Text style={styles.text}>{'<'}</Text>
                 </Pressable>
 
-                <Text style={styles.text}>{format(month, 'MMMM')}</Text>
+                <View
+                    style={{
+                        alignContent: 'center',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text style={styles.text}>{format(month, 'MMMM')}</Text>
+                    {!isSameYear(today, month) && (
+                        <Text style={{ fontSize: 16, color: colors.fg }}>
+                            {format(month, 'yyyy')}
+                        </Text>
+                    )}
+                </View>
 
                 <Pressable
                     onPress={() => {
@@ -166,15 +180,17 @@ function themedStyles(colors: colorType) {
 
         weekContainer: {
             flexDirection: 'row',
-            width: '100%',
+            width: 8.3 * 30 + 6 * 10, // same width with dates
+            justifyContent: 'space-between',
             marginTop: 25,
             gap: 10,
         },
+
         weekText: {
             color: colors.fg,
             textTransform: 'uppercase',
             fontFamily: 'OpenSans_400Regular',
-            fontSize: 16,
+            fontSize: 14,
         } as TextStyle,
 
         monthContainer: {
@@ -186,13 +202,12 @@ function themedStyles(colors: colorType) {
 
         datesContainer: {
             marginTop: 15,
-            flex: 7,
             flexDirection: 'row',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            width: '100%',
-            paddingVertical: 10,
+            width: 8.3 * 30 + 6 * 10, // tring to implement 7 items by row grid
             gap: 10,
+            paddingVertical: 10,
         },
 
         text: {
