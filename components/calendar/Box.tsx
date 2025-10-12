@@ -1,5 +1,5 @@
 import { colorType, darkColors, lightColors } from '@/theme/colors'
-import { format } from 'date-fns'
+import { format, isToday } from 'date-fns'
 import { Pressable, StyleSheet, Text, useColorScheme } from 'react-native'
 
 interface Props {
@@ -20,12 +20,11 @@ export default function Box({ date, variant }: Props) {
     const colorscheme = useColorScheme()
     const colors = colorscheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
-
+    const today = isToday(date)
     return (
         <Pressable
             style={[
                 styles.container,
-                variant === 'today' && styles.today,
                 variant === 'completed' && styles.completed,
                 variant === 'rest' && styles.rest,
                 variant === 'missed' && styles.missed,
@@ -34,6 +33,7 @@ export default function Box({ date, variant }: Props) {
                 variant === 'oldCompleted' && styles.regular,
                 variant === 'oldMissed' && styles.regular,
                 variant === 'oldRest' && styles.regular,
+                today ? styles.today : '',
             ]}
         >
             <Text
@@ -44,6 +44,7 @@ export default function Box({ date, variant }: Props) {
                     variant === 'missed' && styles.textFg,
                     variant === 'future' && styles.textFg,
                     variant === 'regular' && styles.textFg,
+
                     variant === 'oldCompleted' && styles.textGreen,
                     variant === 'oldRest' && styles.textDarkGreen,
                     variant === 'oldMissed' && styles.textRed,
@@ -86,8 +87,7 @@ function themedStyles(colors: colorType) {
         },
 
         today: {
-            backgroundColor: colors.bg2,
-            borderWidth: 1,
+            borderWidth: 2,
             borderColor: colors.fg,
         },
 

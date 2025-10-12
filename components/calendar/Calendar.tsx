@@ -29,13 +29,14 @@ import { useState, useEffect } from 'react'
 export default function Calendar() {
     const mockData = {
         appStartDate: new Date('2025-09-27'), // App start day
-        workoutDays: ['MON', 'TUE', 'THU', 'FRI'], // Weekly workout schedule
+        workoutDays: ['mon', 'tue', 'thu', 'fri'], // Weekly workout schedule
         workouts: [
             new Date('2025-09-28'),
             new Date('2025-09-29'),
             // new Date('2025-10-02'),
             // new Date('2025-10-03'),
             new Date('2025-10-06'),
+            new Date('2025-10-12'),
             // new Date('2025-10-07'),
         ],
     }
@@ -89,8 +90,10 @@ export default function Calendar() {
             </View>
 
             <View style={styles.weekContainer}>
-                {weekDays.map((day) => (
-                    <Text style={styles.weekText}>{day}</Text>
+                {weekDays.map((day, i) => (
+                    <Text key={i} style={styles.weekText}>
+                        {day}
+                    </Text>
                 ))}
             </View>
 
@@ -108,8 +111,8 @@ export default function Calendar() {
                         | 'oldMissed'
                         | 'missed' = 'regular'
 
-                    if (isBefore(day, today)) {
-                        const dayName = format(day, 'EEE').toUpperCase()
+                    if (isBefore(day, today) || isToday(day)) {
+                        const dayName = format(day, 'EEE').toLocaleLowerCase()
                         const isWorkoutDay =
                             mockData.workoutDays.includes(dayName)
                         const isWorkoutDone = mockData.workouts.some((w) =>
@@ -141,9 +144,7 @@ export default function Calendar() {
                         })
                     }
 
-                    if (isToday(day)) {
-                        variant = 'today'
-                    } else if (isAfter(day, today) && isSameMonth(day, month)) {
+                    if (isAfter(day, today) && isSameMonth(day, month)) {
                         variant = 'future'
                     } else if (isBefore(day, mockData.appStartDate)) {
                         variant = 'regular'
