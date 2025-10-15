@@ -5,6 +5,7 @@ export const darkColors = {
     green: '#b8bb26',
     darkGreen: '#98971a',
     red: '#cc241d',
+    fg2: '#fbf1c7',
 }
 
 export const lightColors = {
@@ -14,6 +15,7 @@ export const lightColors = {
     green: '#689d6a',
     darkGreen: '#427b58',
     red: '#cc241d',
+    fg2: '#282828',
 }
 
 export type colorType = typeof darkColors

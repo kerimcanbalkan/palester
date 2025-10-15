@@ -28,7 +28,6 @@ export default function CustomButton({ text, onPress, size }: Props) {
 function themedStyles(colors: colorType, size: number) {
     return StyleSheet.create({
         button: {
-            color: colors.bg,
             backgroundColor: colors.fg,
             fontFamily: 'OpenSans_700Bold',
             paddingHorizontal: 17,
@@ -40,6 +39,7 @@ function themedStyles(colors: colorType, size: number) {
             fontSize: size,
             fontFamily: 'OpenSans_700Bold',
             textTransform: 'uppercase',
+            color: colors.bg,
         } as TextStyle,
     })
 }

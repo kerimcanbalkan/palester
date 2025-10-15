@@ -41,7 +41,7 @@ export default function Box({ date, variant }: Props) {
                     variant === 'today' && styles.textFg,
                     variant === 'completed' && styles.textBg,
                     variant === 'rest' && styles.textBg,
-                    variant === 'missed' && styles.textFg,
+                    variant === 'missed' && styles.textBg,
                     variant === 'future' && styles.textFg,
                     variant === 'regular' && styles.textFg,
 
@@ -89,7 +89,7 @@ function themedStyles(colors: colorType) {
 
         today: {
             borderWidth: 2,
-            borderColor: colors.fg,
+            borderColor: colors.fg2,
         },
 
         completed: {
