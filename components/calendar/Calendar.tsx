@@ -103,69 +103,77 @@ export default function Calendar() {
                 </Pressable>
             </View>
 
-            <View style={styles.weekContainer}>
-                {weekDays.map((day, i) => (
-                    <Text key={i} style={styles.weekText}>
-                        {day}
-                    </Text>
-                ))}
-            </View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <View style={styles.weekContainer}>
+                    {weekDays.map((day, i) => (
+                        <Text key={i} style={styles.weekText}>
+                            {day}
+                        </Text>
+                    ))}
+                </View>
 
-            <View style={styles.datesContainer}>
-                {days.map((day, i) => {
-                    // Determine variant for current month days
-                    let variant:
-                        | 'today'
-                        | 'future'
-                        | 'completed'
-                        | 'rest'
-                        | 'regular'
-                        | 'oldCompleted'
-                        | 'oldRest'
-                        | 'oldMissed'
-                        | 'missed' = 'regular'
+                <View style={styles.datesContainer}>
+                    {days.map((day, i) => {
+                        // Determine variant for current month days
+                        let variant:
+                            | 'today'
+                            | 'future'
+                            | 'completed'
+                            | 'rest'
+                            | 'regular'
+                            | 'oldCompleted'
+                            | 'oldRest'
+                            | 'oldMissed'
+                            | 'missed' = 'regular'
 
-                    if (isBefore(day, today) || isToday(day)) {
-                        const dayName = format(day, 'EEE').toLocaleLowerCase()
-                        const isWorkoutDay =
-                            mockData.workoutDays.includes(dayName)
-                        const isWorkoutDone = mockData.workouts.some((w) =>
-                            isSameDay(day, w)
-                        )
+                        if (isBefore(day, today) || isToday(day)) {
+                            const dayName = format(
+                                day,
+                                'EEE'
+                            ).toLocaleLowerCase()
+                            const isWorkoutDay =
+                                mockData.workoutDays.includes(dayName)
+                            const isWorkoutDone = mockData.workouts.some((w) =>
+                                isSameDay(day, w)
+                            )
 
-                        if (isWorkoutDone) {
-                            variant = isSameMonth(day, month)
-                                ? 'completed'
-                                : 'oldCompleted'
-                        } else if (isWorkoutDay) {
-                            variant = isSameMonth(day, month)
-                                ? 'missed'
-                                : 'oldMissed'
-                        } else {
-                            variant = isSameMonth(day, month)
-                                ? 'rest'
-                                : 'oldRest'
-                        }
-                        mockData.workouts.forEach((w) => {
-                            if (isSameDay(day, w) && isSameMonth(day, month)) {
-                                variant = 'completed'
-                            } else if (
-                                isSameDay(day, w) &&
-                                !isSameMonth(day, month)
-                            ) {
-                                variant = 'oldCompleted'
+                            if (isWorkoutDone) {
+                                variant = isSameMonth(day, month)
+                                    ? 'completed'
+                                    : 'oldCompleted'
+                            } else if (isWorkoutDay) {
+                                variant = isSameMonth(day, month)
+                                    ? 'missed'
+                                    : 'oldMissed'
+                            } else {
+                                variant = isSameMonth(day, month)
+                                    ? 'rest'
+                                    : 'oldRest'
                             }
-                        })
-                    }
+                            mockData.workouts.forEach((w) => {
+                                if (
+                                    isSameDay(day, w) &&
+                                    isSameMonth(day, month)
+                                ) {
+                                    variant = 'completed'
+                                } else if (
+                                    isSameDay(day, w) &&
+                                    !isSameMonth(day, month)
+                                ) {
+                                    variant = 'oldCompleted'
+                                }
+                            })
+                        }
 
-                    if (isAfter(day, today) && isSameMonth(day, month)) {
-                        variant = 'future'
-                    } else if (isBefore(day, mockData.appStartDate)) {
-                        variant = 'regular'
-                    }
+                        if (isAfter(day, today) && isSameMonth(day, month)) {
+                            variant = 'future'
+                        } else if (isBefore(day, mockData.appStartDate)) {
+                            variant = 'regular'
+                        }
 
-                    return <Box key={i} date={day} variant={variant} />
-                })}
+                        return <Box key={i} date={day} variant={variant} />
+                    })}
+                </View>
             </View>
         </View>
     )
@@ -175,7 +183,8 @@ function themedStyles(colors: colorType) {
     return StyleSheet.create({
         container: {
             width: '100%',
-            paddingHorizontal: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
         },
 
         weekContainer: {
@@ -194,6 +203,7 @@ function themedStyles(colors: colorType) {
         } as TextStyle,
 
         monthContainer: {
+            paddingHorizontal: 40,
             width: '100%',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -203,6 +213,7 @@ function themedStyles(colors: colorType) {
         datesContainer: {
             marginTop: 15,
             flexDirection: 'row',
+            alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             width: 8.3 * 30 + 6 * 10, // tring to implement 7 items by row grid

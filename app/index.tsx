@@ -22,7 +22,13 @@ export default function Index() {
     return (
         <View style={styles.container}>
             <Logo size={46} />
-            <View style={{ alignItems: 'center', overflow: 'scroll' }}>
+            <View
+                style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'visible',
+                }}
+            >
                 <Text style={styles.header}>Activity</Text>
                 <Calendar />
             </View>

@@ -4,11 +4,13 @@ import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
 import { useState } from 'react'
 import DayButton from '@/components/DayButton'
+import { useRouter } from 'expo-router'
 
 export default function Program() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
+    const router = useRouter()
 
     const [workoutDays, setWorkoutDays] = useState<string[]>([])
 
@@ -46,11 +48,7 @@ export default function Program() {
 
             <CustomButton
                 text="    Confirm    "
-                onPress={() =>
-                    Alert.alert(
-                        `You selected: ${workoutDays.join(', ').toUpperCase()}`
-                    )
-                }
+                onPress={() => router.navigate('/setup/location')}
                 size={24}
             />
         </View>

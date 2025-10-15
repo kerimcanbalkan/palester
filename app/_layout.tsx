@@ -80,14 +80,18 @@ function themedStyles(colors: colorType) {
     return StyleSheet.create({
         container: {
             flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
             paddingVertical: 20,
             backgroundColor: colors.bg,
-            overflow: 'visible',
             fontFamily: 'OpenSans_400Regular',
+            width: '100%',
             maxWidth: 430,
-            margin: 'auto',
             height: '100%',
+            margin: 'auto',
+            alignSelf: 'center',
         },
+
         loadingContainer: {
             flex: 1,
             justifyContent: 'center',
