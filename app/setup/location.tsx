@@ -12,17 +12,47 @@ import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
 import Logo from '@/components/Logo'
 import { useState } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useSQLiteContext } from 'expo-sqlite'
+import { startOfToday } from 'date-fns'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { initData } from '@/api/api'
 
 export default function Location() {
     const colorScheme = useColorScheme()
+    const params = useLocalSearchParams()
+    const router = useRouter()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const [location, setLocation] = useState<{
         lat: number
         lng: number
     } | null>(null)
+    const db = useSQLiteContext()
 
     const handleLocationSelect = (coords: { lat: number; lng: number }) => {
         setLocation(coords)
+    }
+
+    const handleConfirm = async () => {
+        if (!location) {
+            Alert.alert(
+                'You should choose gym location to app to work correctly'
+            )
+            return
+        }
+
+        const workoutDays = JSON.parse((params.workoutDays as string) || '[]')
+        const workouts: string[] = []
+        const appStartDate = startOfToday().toISOString()
+
+        try {
+            await initData(db, appStartDate, workoutDays, workouts, location)
+            await AsyncStorage.setItem('setup_done', 'true')
+
+            router.replace('/')
+        } catch (err) {
+            Alert.alert('something went wrong!!!')
+        }
     }
 
     const styles = themedStyles(colors)
@@ -39,9 +69,7 @@ export default function Location() {
             <CustomButton
                 text="   confirm   "
                 size={24}
-                onPress={() => {
-                    Alert.alert(`${location?.lat}/${location?.lng}`)
-                }}
+                onPress={handleConfirm}
             />
         </View>
     )

@@ -26,6 +26,17 @@ export default function Program() {
         })
     }
 
+    function handleConfirm() {
+        if (workoutDays.length === 0) {
+            Alert.alert('You should choose atleast 1 workout day')
+            return
+        }
+        router.push({
+            pathname: '/setup/location',
+            params: { workoutDays: JSON.stringify(workoutDays) },
+        })
+    }
+
     return (
         <View style={styles.container}>
             <Logo size={46} />
@@ -48,7 +59,7 @@ export default function Program() {
 
             <CustomButton
                 text="    Confirm    "
-                onPress={() => router.navigate('/setup/location')}
+                onPress={handleConfirm}
                 size={24}
             />
         </View>

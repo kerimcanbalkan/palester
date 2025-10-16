@@ -12,12 +12,33 @@ import { colorType, darkColors, lightColors } from '@/theme/colors'
 import { useRouter } from 'expo-router'
 import CustomButton from '@/components/CustomButton'
 import Calendar from '@/components/calendar/Calendar'
+import { useEffect, useState } from 'react'
+import { useSQLiteContext } from 'expo-sqlite'
+import { getData } from '@/api/api'
 
 export default function Index() {
     const router = useRouter()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
+    const db = useSQLiteContext()
+    const [data, setData] = useState<Awaited<
+        ReturnType<typeof getData>
+    > | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await getData(db)
+                console.log('this is data', result)
+                setData(result)
+            } catch (error) {
+                console.error('Failed to fetch app data:', error)
+            } finally {
+            }
+        }
+        fetchData()
+    }, [db])
 
     return (
         <View style={styles.container}>
