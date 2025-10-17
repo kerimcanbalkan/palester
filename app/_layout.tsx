@@ -1,8 +1,6 @@
 import { StyleSheet, useColorScheme } from 'react-native'
-import AsyncStorage, {
-    useAsyncStorage,
-} from '@react-native-async-storage/async-storage'
-import { SQLiteDatabase, SQLiteProvider, useSQLiteContext } from 'expo-sqlite'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite'
 import { Slot, usePathname, useRouter } from 'expo-router'
 import {
     useFonts,
@@ -12,12 +10,8 @@ import {
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Loading from '@/components/Loading'
-import { useState, useEffect } from 'react'
-
-type QueryResultRow = Record<string, any>
-type QueryResult = {
-    rows: QueryResultRow[]
-}
+import { useEffect } from 'react'
+import { AlertProvider } from '@/context/AlertContext'
 
 export default function RootLayout() {
     const colorScheme = useColorScheme()
@@ -25,7 +19,6 @@ export default function RootLayout() {
     const styles = themedStyles(colors)
     const router = useRouter()
     const pathname = usePathname()
-    const [loading, setLoading] = useState(true)
 
     // // Redirect if setup is not done
     useEffect(() => {
@@ -61,9 +54,11 @@ export default function RootLayout() {
 
     return (
         <SQLiteProvider databaseName="app_data.db" onInit={initializeDatabase}>
-            <SafeAreaView style={styles.container}>
-                <Slot />
-            </SafeAreaView>
+            <AlertProvider>
+                <SafeAreaView style={styles.container}>
+                    <Slot />
+                </SafeAreaView>
+            </AlertProvider>
         </SQLiteProvider>
     )
 }

@@ -1,16 +1,18 @@
-import { View, Text, StyleSheet, useColorScheme, Alert } from 'react-native'
+import { View, Text, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
 import { useState } from 'react'
 import DayButton from '@/components/DayButton'
 import { useRouter } from 'expo-router'
+import { useAlert } from '@/context/AlertContext'
 
 export default function Program() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const router = useRouter()
+    const { showAlert } = useAlert()
 
     const [workoutDays, setWorkoutDays] = useState<string[]>([])
 
@@ -28,7 +30,11 @@ export default function Program() {
 
     function handleConfirm() {
         if (workoutDays.length === 0) {
-            Alert.alert('You should choose atleast 1 workout day')
+            showAlert(
+                'Error',
+                'You should choose at least 1 workout day!',
+                'error'
+            )
             return
         }
         router.push({

@@ -17,6 +17,7 @@ import { useSQLiteContext } from 'expo-sqlite'
 import { startOfToday } from 'date-fns'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { initData } from '@/api/api'
+import { useAlert } from '@/context/AlertContext'
 
 export default function Location() {
     const colorScheme = useColorScheme()
@@ -28,6 +29,7 @@ export default function Location() {
         lng: number
     } | null>(null)
     const db = useSQLiteContext()
+    const { showAlert } = useAlert()
 
     const handleLocationSelect = (coords: { lat: number; lng: number }) => {
         setLocation(coords)
@@ -35,8 +37,10 @@ export default function Location() {
 
     const handleConfirm = async () => {
         if (!location) {
-            Alert.alert(
-                'You should choose gym location to app to work correctly'
+            showAlert(
+                'Error',
+                'You should choose gym location to app to work correctly.',
+                'error'
             )
             return
         }

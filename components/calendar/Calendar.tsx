@@ -23,25 +23,17 @@ import {
     isBefore,
     isSameDay,
     isSameMonth,
+    parseISO,
 } from 'date-fns'
 import Box from './Box'
 import { useState, useEffect } from 'react'
+import { AppData } from '@/api/api'
 
-export default function Calendar() {
-    const mockData = {
-        appStartDate: new Date('2025-09-27'), // App start day
-        workoutDays: ['mon', 'tue', 'thu', 'fri'], // Weekly workout schedule
-        workouts: [
-            new Date('2025-09-28'),
-            new Date('2025-09-29'),
-            // new Date('2025-10-02'),
-            // new Date('2025-10-03'),
-            new Date('2025-10-06'),
-            new Date('2025-10-12'),
-            // new Date('2025-10-07'),
-        ],
-    }
+interface calendarProps {
+    data: AppData
+}
 
+export default function Calendar({ data }: calendarProps) {
     const today = startOfToday()
     const [month, setMonth] = useState(startOfMonth(today))
     const [days, setDays] = useState(
@@ -132,9 +124,9 @@ export default function Calendar() {
                                 'EEE'
                             ).toLocaleLowerCase()
                             const isWorkoutDay =
-                                mockData.workoutDays.includes(dayName)
-                            const isWorkoutDone = mockData.workouts.some((w) =>
-                                isSameDay(day, w)
+                                data?.workoutDays.includes(dayName)
+                            const isWorkoutDone = data?.workouts.some((w) =>
+                                isSameDay(day, parseISO(w))
                             )
 
                             if (isWorkoutDone) {
@@ -150,14 +142,15 @@ export default function Calendar() {
                                     ? 'rest'
                                     : 'oldRest'
                             }
-                            mockData.workouts.forEach((w) => {
+
+                            data?.workouts.forEach((w) => {
                                 if (
-                                    isSameDay(day, w) &&
+                                    isSameDay(day, parseISO(w)) &&
                                     isSameMonth(day, month)
                                 ) {
                                     variant = 'completed'
                                 } else if (
-                                    isSameDay(day, w) &&
+                                    isSameDay(day, parseISO(w)) &&
                                     !isSameMonth(day, month)
                                 ) {
                                     variant = 'oldCompleted'
@@ -167,7 +160,9 @@ export default function Calendar() {
 
                         if (isAfter(day, today) && isSameMonth(day, month)) {
                             variant = 'future'
-                        } else if (isBefore(day, mockData.appStartDate)) {
+                        } else if (
+                            isBefore(day, parseISO(data?.appStartDate))
+                        ) {
                             variant = 'regular'
                         }
 

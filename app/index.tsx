@@ -9,36 +9,115 @@ import {
 } from 'react-native'
 import Logo from '@/components/Logo'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
-import { useRouter } from 'expo-router'
 import CustomButton from '@/components/CustomButton'
 import Calendar from '@/components/calendar/Calendar'
 import { useEffect, useState } from 'react'
 import { useSQLiteContext } from 'expo-sqlite'
-import { getData } from '@/api/api'
+import { getData, AppData, addWorkout } from '@/api/api'
+import Loading from '@/components/Loading'
+import * as Location from 'expo-location'
+import { LatLng } from 'react-native-leaflet-view'
+import { getDistance } from 'geolib'
+import CustomModal from '@/components/CustomModal'
+import { useAlert } from '@/context/AlertContext'
+import { startOfToday } from 'date-fns'
 
 export default function Index() {
-    const router = useRouter()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const db = useSQLiteContext()
-    const [data, setData] = useState<Awaited<
-        ReturnType<typeof getData>
-    > | null>(null)
+    const [data, setData] = useState<Awaited<ReturnType<AppData>> | null>(null)
+    const [userLocation, setUserLocation] = useState<LatLng | null>(null)
+    const [logOpen, setLogOpen] = useState(false)
+    const { showAlert } = useAlert()
+
+    const fetchData = async () => {
+        try {
+            const result = await getData(db)
+            console.log('this is data', result)
+            setData(result)
+        } catch (error) {
+            console.error('Failed to fetch app data:', error)
+        } finally {
+        }
+    }
+
+    const getCurrentLocation = async () => {
+        try {
+            const { status } =
+                await Location.requestForegroundPermissionsAsync()
+
+            if (status !== 'granted') {
+                showAlert(
+                    'Location Permission Denied',
+                    'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
+                    'error'
+                )
+                return false
+            }
+
+            // Check if location services (GPS) are enabled
+            const servicesEnabled = await Location.hasServicesEnabledAsync()
+            if (!servicesEnabled) {
+                showAlert(
+                    'Location Services Disabled',
+                    'Your GPS or location services are turned off. Please enable them and try again.',
+                    'error'
+                )
+                return false
+            }
+            const location = await Location.getCurrentPositionAsync({})
+            setUserLocation({
+                lat: location.coords.latitude,
+                lng: location.coords.longitude,
+            })
+        } catch (error) {
+            Alert.alert('Error getting location', JSON.stringify(error))
+            console.error('Error getting location:', error)
+        }
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await getData(db)
-                console.log('this is data', result)
-                setData(result)
-            } catch (error) {
-                console.error('Failed to fetch app data:', error)
-            } finally {
-            }
-        }
         fetchData()
+        getCurrentLocation()
     }, [db])
+
+    async function handleWorkoutLog() {
+        if (!userLocation) {
+            showAlert(
+                'Could not get location',
+                'You should allow location services to be able to log a workout',
+                'error'
+            )
+            return
+        }
+
+        if (!data?.gymLocation) {
+            showAlert(
+                'Gym location not set',
+                'Cannot verify your location.',
+                'error'
+            )
+            return
+        }
+
+        const distance = getDistance(userLocation, data.gymLocation)
+
+        if (distance <= 500) {
+            const date = startOfToday().toISOString()
+            try {
+                await addWorkout(db, date)
+                await fetchData()
+            } catch (err) {}
+        } else {
+            showAlert(
+                'Cheater',
+                'You should be at the gym do not kid yourself',
+                'info'
+            )
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -51,14 +130,18 @@ export default function Index() {
                 }}
             >
                 <Text style={styles.header}>Activity</Text>
-                <Calendar />
+                {data !== null ? <Calendar data={data} /> : <Loading />}
             </View>
             <CustomButton
                 text="Log Workout"
-                onPress={() => {
-                    router.navigate('/setup/program')
-                }}
+                onPress={() => setLogOpen(true)}
                 size={24}
+            />
+            <CustomModal
+                dialog="Are you sure you want to log this workout?"
+                onConfirm={handleWorkoutLog}
+                visible={logOpen}
+                onClose={() => setLogOpen(false)}
             />
         </View>
     )

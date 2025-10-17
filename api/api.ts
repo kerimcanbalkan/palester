@@ -5,13 +5,22 @@ export type GymLocation = {
     lng: number
 } | null
 
-export type AppData = {
+export type AppDataSQL = {
     id: number
     app_start_date: string
     workout_days: string
     workouts: string
     gym_location: string | null
 }
+
+export type AppData = {
+    id: number
+    appStartDate: string
+    workoutDays: string[]
+    workouts: string[]
+    gymLocation: GymLocation
+}
+
 export async function initData(
     db: SQLiteDatabase,
     appStartDate: string,
@@ -35,7 +44,7 @@ export async function getData(db: SQLiteDatabase): Promise<{
     workouts: string[]
     gymLocation: GymLocation
 } | null> {
-    const result = await db.getAllAsync<AppData>(
+    const result = await db.getAllAsync<AppDataSQL>(
         'SELECT * FROM app_data LIMIT 1'
     )
     if (!result.length) return null
