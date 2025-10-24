@@ -36,7 +36,7 @@ export default function Location() {
     }
 
     const handleConfirm = async () => {
-        if (!location) {
+        if (location === null) {
             showAlert(
                 'Error',
                 'You should choose gym location to app to work correctly.',
@@ -55,7 +55,11 @@ export default function Location() {
 
             router.replace('/')
         } catch (err) {
-            Alert.alert('something went wrong!!!')
+            showAlert(
+                'Error',
+                'Something went wrong! Could not save user data, try again later',
+                'error'
+            )
         }
     }
 

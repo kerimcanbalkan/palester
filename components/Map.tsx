@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert } from 'react-native'
+import { Alert, View, Text } from 'react-native'
 import { Asset } from 'expo-asset'
 import * as FileSystem from 'expo-file-system/legacy'
 import * as Location from 'expo-location'
@@ -10,6 +10,7 @@ import {
     WebViewLeafletEvents,
 } from 'react-native-leaflet-view'
 import Loading from '@/components/Loading'
+import { useAlert } from '@/context/AlertContext'
 
 type MapProps = {
     onLocationSelect?: (coords: LatLng) => void
@@ -19,6 +20,8 @@ export default function Map({ onLocationSelect }: MapProps) {
     const [webViewContent, setWebViewContent] = useState<string | null>(null)
     const [userLocation, setUserLocation] = useState<LatLng | null>(null)
     const [locationMarker, setlocationMarker] = useState<MapMarker | null>(null)
+    const [locationError, setLocationError] = useState(false)
+    const { showAlert } = useAlert()
 
     const handleMessage = (event: any) => {
         const { event: eventType, payload } = event
@@ -27,6 +30,9 @@ export default function Map({ onLocationSelect }: MapProps) {
             eventType === WebViewLeafletEvents.ON_MAP_TOUCHED &&
             payload?.touchLatLng
         ) {
+            // send coordinates to parent
+            onLocationSelect?.(locationMarker?.position)
+
             setlocationMarker({
                 position: {
                     lat: payload.touchLatLng.lat,
@@ -35,9 +41,6 @@ export default function Map({ onLocationSelect }: MapProps) {
                 size: [32, 32],
                 icon: '📍',
             })
-
-            // send coordinates to parent
-            onLocationSelect?.(locationMarker?.position)
         }
     }
 
@@ -56,6 +59,7 @@ export default function Map({ onLocationSelect }: MapProps) {
             } catch (error) {
                 Alert.alert('Error loading HTML', JSON.stringify(error))
                 console.error('Error loading HTML:', error)
+                setLocationError(true)
             }
         }
 
@@ -64,7 +68,12 @@ export default function Map({ onLocationSelect }: MapProps) {
                 const { status } =
                     await Location.requestForegroundPermissionsAsync()
                 if (status !== 'granted') {
-                    Alert.alert('Permission denied', 'Cannot access location')
+                    showAlert(
+                        'Location Permission Denied',
+                        'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
+                        'error'
+                    )
+                    setLocationError(true)
                     return
                 }
 
@@ -76,8 +85,13 @@ export default function Map({ onLocationSelect }: MapProps) {
                     })
                 }
             } catch (error) {
-                Alert.alert('Error getting location', JSON.stringify(error))
+                showAlert(
+                    'Location Error',
+                    'Something Went Wrong! Could not get your location.',
+                    'error'
+                )
                 console.error('Error getting location:', error)
+                setLocationError(true)
             }
         }
 
@@ -91,6 +105,32 @@ export default function Map({ onLocationSelect }: MapProps) {
 
     if (!webViewContent || !userLocation) {
         return <Loading />
+    }
+
+    if (!locationError) {
+        return (
+            <View style={{ flex: 1, alignContent: 'center' }}>
+                <Text
+                    style={{
+                        fontSize: 120,
+                        textAlign: 'center',
+                        textOverflow: 'visible',
+                    }}
+                >
+                    ⚠︎
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 24,
+                        textOverflow: 'visible',
+                        textAlign: 'center',
+                    }}
+                >
+                    You should allow location services for app to work
+                    correctly.
+                </Text>
+            </View>
+        )
     }
 
     return (

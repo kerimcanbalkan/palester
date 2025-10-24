@@ -21,6 +21,7 @@ import { getDistance } from 'geolib'
 import CustomModal from '@/components/CustomModal'
 import { useAlert } from '@/context/AlertContext'
 import { startOfToday } from 'date-fns'
+import { useRouter } from 'expo-router'
 
 export default function Index() {
     const colorScheme = useColorScheme()
@@ -31,15 +32,16 @@ export default function Index() {
     const [userLocation, setUserLocation] = useState<LatLng | null>(null)
     const [logOpen, setLogOpen] = useState(false)
     const { showAlert } = useAlert()
+    const [locationError, setLocationError] = useState(false)
+    const [dataError, setDataError] = useState(false)
 
     const fetchData = async () => {
         try {
             const result = await getData(db)
-            console.log('this is data', result)
             setData(result)
         } catch (error) {
             console.error('Failed to fetch app data:', error)
-        } finally {
+            setDataError(true)
         }
     }
 
@@ -54,6 +56,7 @@ export default function Index() {
                     'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
                     'error'
                 )
+                setLocationError(true)
                 return false
             }
 
@@ -65,6 +68,7 @@ export default function Index() {
                     'Your GPS or location services are turned off. Please enable them and try again.',
                     'error'
                 )
+                setLocationError(true)
                 return false
             }
             const location = await Location.getCurrentPositionAsync({})
@@ -73,7 +77,7 @@ export default function Index() {
                 lng: location.coords.longitude,
             })
         } catch (error) {
-            Alert.alert('Error getting location', JSON.stringify(error))
+            setLocationError(true)
             console.error('Error getting location:', error)
         }
     }
@@ -87,7 +91,7 @@ export default function Index() {
         if (!userLocation) {
             showAlert(
                 'Could not get location',
-                'You should allow location services to be able to log a workout',
+                'There was a problem with location services could not log the workout',
                 'error'
             )
             return
@@ -109,7 +113,7 @@ export default function Index() {
             try {
                 await addWorkout(db, date)
                 await fetchData()
-            } catch (err) {}
+            } catch (err) { }
         } else {
             showAlert(
                 'Cheater',
@@ -117,6 +121,57 @@ export default function Index() {
                 'info'
             )
         }
+    }
+
+    if (!locationError) {
+        return (
+            <View style={styles.container}>
+                <Text
+                    style={{
+                        fontSize: 120,
+                        textAlign: 'center',
+                        textOverflow: 'visible',
+                    }}
+                >
+                    ⚠︎
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 24,
+                        textOverflow: 'visible',
+                        textAlign: 'center',
+                    }}
+                >
+                    You should allow location services for app to work
+                    correctly.
+                </Text>
+            </View>
+        )
+    }
+
+    if (!dataError) {
+        return (
+            <View style={styles.container}>
+                <Text
+                    style={{
+                        fontSize: 120,
+                        textAlign: 'center',
+                        textOverflow: 'visible',
+                    }}
+                >
+                    ⚠︎
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 24,
+                        textOverflow: 'visible',
+                        textAlign: 'center',
+                    }}
+                >
+                    Something went wrong! Could not get user data.
+                </Text>
+            </View>
+        )
     }
 
     return (
@@ -153,6 +208,7 @@ function themedStyles(colors: colorType) {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'space-between',
+            backgroundColor: colors.bg,
         } as ViewStyle,
 
         header: {

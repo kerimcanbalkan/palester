@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Loading from '@/components/Loading'
 import { useEffect } from 'react'
 import { AlertProvider } from '@/context/AlertContext'
+import AppErrorBoundary from '@/error-boundary/AppErrorBoundary'
+import ErrorFallback from '@/error-boundary/ErrorFallback'
 
 export default function RootLayout() {
     const colorScheme = useColorScheme()
@@ -20,7 +22,7 @@ export default function RootLayout() {
     const router = useRouter()
     const pathname = usePathname()
 
-    // // Redirect if setup is not done
+    // Redirect if setup is not done
     useEffect(() => {
         const checkSetup = async () => {
             const setupDone = await AsyncStorage.getItem('setup_done')
@@ -53,13 +55,26 @@ export default function RootLayout() {
     }
 
     return (
-        <SQLiteProvider databaseName="app_data.db" onInit={initializeDatabase}>
-            <AlertProvider>
-                <SafeAreaView style={styles.container}>
-                    <Slot />
-                </SafeAreaView>
-            </AlertProvider>
-        </SQLiteProvider>
+        <AppErrorBoundary
+            fallback={
+                <ErrorFallback
+                    onRetry={() => {
+                        router.push('/')
+                    }}
+                />
+            }
+        >
+            <SQLiteProvider
+                databaseName="app_data.db"
+                onInit={initializeDatabase}
+            >
+                <AlertProvider>
+                    <SafeAreaView style={styles.container}>
+                        <Slot />
+                    </SafeAreaView>
+                </AlertProvider>
+            </SQLiteProvider>
+        </AppErrorBoundary>
     )
 }
 
