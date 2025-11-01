@@ -107,9 +107,11 @@ export default function Map({ onLocationSelect }: MapProps) {
         return <Loading />
     }
 
-    if (!locationError) {
+    if (locationError) {
         return (
-            <View style={{ flex: 1, alignContent: 'center' }}>
+            <View
+                style={{ flex: 1, alignContent: 'center', paddingVertical: 2 }}
+            >
                 <Text
                     style={{
                         fontSize: 120,

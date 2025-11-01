@@ -123,40 +123,57 @@ export default function Index() {
         }
     }
 
-    if (!locationError) {
+    if (locationError) {
         return (
-            <View style={styles.container}>
-                <Text
-                    style={{
-                        fontSize: 120,
-                        textAlign: 'center',
-                        textOverflow: 'visible',
-                    }}
-                >
-                    ⚠︎
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 24,
-                        textOverflow: 'visible',
-                        textAlign: 'center',
-                    }}
-                >
-                    You should allow location services for app to work
-                    correctly.
-                </Text>
+            <View
+                style={{
+                    paddingHorizontal: 5,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <View>
+                    <Text
+                        style={{
+                            fontSize: 120,
+                            textAlign: 'center',
+                            textOverflow: 'visible',
+                            color: colors.fg,
+                        }}
+                    >
+                        ⚠︎
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: 24,
+                            textOverflow: 'visible',
+                            textAlign: 'center',
+                            color: colors.fg,
+                        }}
+                    >
+                        You should allow location services for app to work
+                        correctly.
+                    </Text>
+                </View>
             </View>
         )
     }
 
-    if (!dataError) {
+    if (dataError) {
         return (
-            <View style={styles.container}>
+            <View
+                style={{
+                    paddingHorizontal: 5,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                }}
+            >
                 <Text
                     style={{
                         fontSize: 120,
                         textAlign: 'center',
                         textOverflow: 'visible',
+                        color: colors.fg,
                     }}
                 >
                     ⚠︎
@@ -166,6 +183,7 @@ export default function Index() {
                         fontSize: 24,
                         textOverflow: 'visible',
                         textAlign: 'center',
+                        color: colors.fg,
                     }}
                 >
                     Something went wrong! Could not get user data.
