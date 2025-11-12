@@ -35,57 +35,57 @@ export default function Index() {
     const [locationError, setLocationError] = useState(false)
     const [dataError, setDataError] = useState(false)
 
-    const fetchData = async () => {
-        try {
-            const result = await getData(db)
-            setData(result)
-        } catch (error) {
-            console.error('Failed to fetch app data:', error)
-            setDataError(true)
-        }
-    }
-
-    const getCurrentLocation = async () => {
-        try {
-            const { status } =
-                await Location.requestForegroundPermissionsAsync()
-
-            if (status !== 'granted') {
-                showAlert(
-                    'Location Permission Denied',
-                    'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
-                    'error'
-                )
-                setLocationError(true)
-                return false
-            }
-
-            // Check if location services (GPS) are enabled
-            const servicesEnabled = await Location.hasServicesEnabledAsync()
-            if (!servicesEnabled) {
-                showAlert(
-                    'Location Services Disabled',
-                    'Your GPS or location services are turned off. Please enable them and try again.',
-                    'error'
-                )
-                setLocationError(true)
-                return false
-            }
-            const location = await Location.getCurrentPositionAsync({})
-            setUserLocation({
-                lat: location.coords.latitude,
-                lng: location.coords.longitude,
-            })
-        } catch (error) {
-            setLocationError(true)
-            console.error('Error getting location:', error)
-        }
-    }
-
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await getData(db)
+                setData(result)
+            } catch (error) {
+                console.error('Failed to fetch app data:', error)
+                setDataError(true)
+            }
+        }
+
+        const getCurrentLocation = async () => {
+            try {
+                const { status } =
+                    await Location.requestForegroundPermissionsAsync()
+
+                if (status !== 'granted') {
+                    showAlert(
+                        'Location Permission Denied',
+                        'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
+                        'error'
+                    )
+                    setLocationError(true)
+                    return false
+                }
+
+                // Check if location services (GPS) are enabled
+                const servicesEnabled = await Location.hasServicesEnabledAsync()
+                if (!servicesEnabled) {
+                    showAlert(
+                        'Location Services Disabled',
+                        'Your GPS or location services are turned off. Please enable them and try again.',
+                        'error'
+                    )
+                    setLocationError(true)
+                    return false
+                }
+                const location = await Location.getCurrentPositionAsync({})
+                setUserLocation({
+                    lat: location.coords.latitude,
+                    lng: location.coords.longitude,
+                })
+            } catch (error) {
+                setLocationError(true)
+                console.error('Error getting location:', error)
+            }
+        }
+
         fetchData()
         getCurrentLocation()
-    }, [])
+    })
 
     async function handleWorkoutLog() {
         if (!userLocation) {
@@ -114,7 +114,14 @@ export default function Index() {
             try {
                 await addWorkout(db, date)
                 await fetchData()
-            } catch (err) {}
+            } catch (err) {
+                console.error('error while adding workout', err)
+                showAlert(
+                    'error',
+                    'Something went wrong! Could not add workout',
+                    'error'
+                )
+            }
         } else {
             showAlert(
                 'Cheater',

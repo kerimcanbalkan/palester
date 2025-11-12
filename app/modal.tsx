@@ -1,9 +1,7 @@
 import {
     View,
-    Text,
     StyleSheet,
     ViewStyle,
-    TextStyle,
     useColorScheme,
 } from 'react-native'
 import { Link } from 'expo-router'

@@ -2,7 +2,7 @@ import { Text, TextStyle, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 
 interface Props {
-    size: Number
+    size: number
 }
 
 export default function Logo({ size = 46 }: Props) {
@@ -13,7 +13,7 @@ export default function Logo({ size = 46 }: Props) {
     return <Text style={styles.logo}>Palester</Text>
 }
 
-function themedStyles(colors: colorType, size: Number) {
+function themedStyles(colors: colorType, size: number) {
     return StyleSheet.create({
         logo: {
             color: colors.fg,

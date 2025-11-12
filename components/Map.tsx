@@ -101,7 +101,7 @@ export default function Map({ onLocationSelect }: MapProps) {
         return () => {
             isMounted = false
         }
-    }, [])
+    })
 
     if (!webViewContent || !userLocation) {
         return <Loading />

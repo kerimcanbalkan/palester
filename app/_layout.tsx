@@ -1,8 +1,7 @@
 import { StyleSheet, useColorScheme } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite'
-import { Slot, usePathname, useRouter } from 'expo-router'
-import { Redirect } from 'expo-router'
+import { Slot, usePathname, useRouter, Redirect } from 'expo-router'
 import {
     useFonts,
     OpenSans_400Regular,
@@ -33,7 +32,7 @@ export default function RootLayout() {
             }
         }
         checkSetup()
-    }, [])
+    }, [pathname])
 
     const [fontsLoaded] = useFonts({
         OpenSans_400Regular,

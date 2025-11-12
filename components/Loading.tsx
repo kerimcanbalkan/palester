@@ -35,7 +35,7 @@ export default function Loading() {
         loop.start()
 
         return () => loop.stop()
-    }, [])
+    }, [fadeAnim])
 
     return (
         <View style={styles.loadingContainer}>

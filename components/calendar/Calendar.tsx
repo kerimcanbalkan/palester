@@ -6,7 +6,6 @@ import {
     ViewStyle,
     useColorScheme,
     TextStyle,
-    Pressable,
 } from 'react-native'
 import {
     startOfToday,
@@ -129,7 +128,7 @@ export default function Calendar({ data }: calendarProps) {
                             | 'missed' = 'regular'
 
                         if (
-                            (isBefore(day, today) && program != undefined) ||
+                            (isBefore(day, today) && program !== undefined) ||
                             isToday(day)
                         ) {
                             const dayName = format(

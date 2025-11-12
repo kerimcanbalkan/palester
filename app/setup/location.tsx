@@ -13,11 +13,9 @@ import Logo from '@/components/Logo'
 import { useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
-import { startOfToday } from 'date-fns'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { initData } from '@/api/api'
+import { initData, AppData } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
-import { AppData } from '@/api/api'
 
 export default function Location() {
     const colorScheme = useColorScheme()
