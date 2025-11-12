@@ -2,6 +2,7 @@ import { StyleSheet, useColorScheme } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite'
 import { Slot, usePathname, useRouter } from 'expo-router'
+import { Redirect } from 'expo-router'
 import {
     useFonts,
     OpenSans_400Regular,
@@ -10,7 +11,7 @@ import {
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Loading from '@/components/Loading'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { AlertProvider } from '@/context/AlertContext'
 import AppErrorBoundary from '@/error-boundary/AppErrorBoundary'
 import ErrorFallback from '@/error-boundary/ErrorFallback'
@@ -21,13 +22,14 @@ export default function RootLayout() {
     const styles = themedStyles(colors)
     const router = useRouter()
     const pathname = usePathname()
+    const [setupDone, setSetupDone] = useState(true)
 
     // Redirect if setup is not done
     useEffect(() => {
         const checkSetup = async () => {
             const setupDone = await AsyncStorage.getItem('setup_done')
             if (!setupDone && pathname === '/') {
-                router.replace('/setup/program')
+                setSetupDone(false)
             }
         }
         checkSetup()
@@ -42,13 +44,16 @@ export default function RootLayout() {
         return <Loading />
     }
 
+    if (!setupDone) {
+        return <Redirect href="/setup/program" />
+    }
+
     const initializeDatabase = async (db: SQLiteDatabase) => {
         await db.execAsync(`
       CREATE TABLE IF NOT EXISTS app_data (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        app_start_date TEXT,
         gym_location TEXT,
-        workout_days TEXT,
+        programs TEXT,
         workouts TEXT
       );
     `)

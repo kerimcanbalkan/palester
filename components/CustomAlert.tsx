@@ -41,6 +41,11 @@ export default function CustomModal({
                     backgroundColor: colors.fg, // assuming you have green in your theme
                     textColor: colors.bg,
                 }
+            case 'success':
+                return {
+                    backgroundColor: colors.green, // assuming you have green in your theme
+                    textColor: colors.bg,
+                }
             case 'info':
             default:
                 return {

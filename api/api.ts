@@ -7,43 +7,33 @@ export type GymLocation = {
 
 export type AppDataSQL = {
     id: number
-    app_start_date: string
-    workout_days: string
+    programs: string
     workouts: string
     gym_location: string | null
 }
 
+export type TrainingProgram = {
+    date: string
+    workoutDays: string[]
+}
+
 export type AppData = {
     id: number
-    appStartDate: string
-    workoutDays: string[]
+    programs: TrainingProgram[]
     workouts: string[]
     gymLocation: GymLocation
 }
 
-export async function initData(
-    db: SQLiteDatabase,
-    appStartDate: string,
-    workoutDays: string[],
-    workouts: string[],
-    gymLocation: GymLocation
-) {
+export async function initData(db: SQLiteDatabase, data: AppData) {
     await db.runAsync(
-        'INSERT INTO app_data (app_start_date, workout_days, workouts, gym_location) VALUES (?, ?, ?, ?)',
-        appStartDate,
-        JSON.stringify(workoutDays),
-        JSON.stringify(workouts),
-        JSON.stringify(gymLocation)
+        'INSERT INTO app_data (programs, workouts, gym_location) VALUES (?, ?, ?)',
+        JSON.stringify(data.programs),
+        JSON.stringify(data.workouts),
+        JSON.stringify(data.gymLocation)
     )
 }
 
-export async function getData(db: SQLiteDatabase): Promise<{
-    id: number
-    appStartDate: string
-    workoutDays: string[]
-    workouts: string[]
-    gymLocation: GymLocation
-} | null> {
+export async function getData(db: SQLiteDatabase): Promise<AppData | null> {
     const result = await db.getAllAsync<AppDataSQL>(
         'SELECT * FROM app_data LIMIT 1'
     )
@@ -52,8 +42,7 @@ export async function getData(db: SQLiteDatabase): Promise<{
     const row = result[0]
     return {
         id: row.id,
-        appStartDate: row.app_start_date,
-        workoutDays: JSON.parse(row.workout_days || '[]'),
+        programs: JSON.parse(row.programs || '[]'),
         workouts: JSON.parse(row.workouts || '[]'),
         gymLocation: row.gym_location ? JSON.parse(row.gym_location) : null,
     }
@@ -72,7 +61,23 @@ export async function addWorkout(db: SQLiteDatabase, date: string) {
     }
 }
 
-export async function getGymLocation(db: SQLiteDatabase): Promise<GymLocation> {
+export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
     const data = await getData(db)
-    return data?.gymLocation ?? null
+    const programs: TrainingProgram[] = data ? data.programs : []
+
+    programs.push(program)
+    await db.runAsync(
+        'UPDATE app_data SET programs = ? WHERE id = 1',
+        JSON.stringify(programs)
+    )
+}
+
+export async function updateGymLocation(
+    db: SQLiteDatabase,
+    location: GymLocation
+) {
+    await db.runAsync(
+        'UPDATE app_data SET gym_location = ? WHERE id = 1',
+        JSON.stringify(location)
+    )
 }

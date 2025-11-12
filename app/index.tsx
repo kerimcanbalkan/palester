@@ -5,7 +5,6 @@ import {
     useColorScheme,
     ViewStyle,
     TextStyle,
-    Alert,
 } from 'react-native'
 import Logo from '@/components/Logo'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
@@ -21,7 +20,8 @@ import { getDistance } from 'geolib'
 import CustomModal from '@/components/CustomModal'
 import { useAlert } from '@/context/AlertContext'
 import { startOfToday } from 'date-fns'
-import { useRouter } from 'expo-router'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Link } from 'expo-router'
 
 export default function Index() {
     const colorScheme = useColorScheme()
@@ -85,7 +85,7 @@ export default function Index() {
     useEffect(() => {
         fetchData()
         getCurrentLocation()
-    }, [db])
+    }, [])
 
     async function handleWorkoutLog() {
         if (!userLocation) {
@@ -107,18 +107,19 @@ export default function Index() {
         }
 
         const distance = getDistance(userLocation, data.gymLocation)
+        console.log('DISTANCE', distance)
 
-        if (distance <= 500) {
+        if (distance <= 50) {
             const date = startOfToday().toISOString()
             try {
                 await addWorkout(db, date)
                 await fetchData()
-            } catch (err) { }
+            } catch (err) {}
         } else {
             showAlert(
                 'Cheater',
                 'You should be at the gym do not kid yourself',
-                'info'
+                'error'
             )
         }
     }
@@ -193,29 +194,34 @@ export default function Index() {
     }
 
     return (
-        <View style={styles.container}>
-            <Logo size={46} />
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'visible',
-                }}
-            >
-                <Text style={styles.header}>Activity</Text>
-                {data !== null ? <Calendar data={data} /> : <Loading />}
+        <View>
+            <Link href="/modal" style={styles.settings}>
+                <Ionicons name="settings" size={32} color={colors.fg} />
+            </Link>
+            <View style={styles.container}>
+                <Logo size={46} />
+                <View
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'visible',
+                    }}
+                >
+                    <Text style={styles.header}>Activity</Text>
+                    {data !== null ? <Calendar data={data} /> : <Loading />}
+                </View>
+                <CustomButton
+                    text="Log Workout"
+                    onPress={() => setLogOpen(true)}
+                    size={24}
+                />
+                <CustomModal
+                    dialog="Are you sure you want to log this workout?"
+                    onConfirm={handleWorkoutLog}
+                    visible={logOpen}
+                    onClose={() => setLogOpen(false)}
+                />
             </View>
-            <CustomButton
-                text="Log Workout"
-                onPress={() => setLogOpen(true)}
-                size={24}
-            />
-            <CustomModal
-                dialog="Are you sure you want to log this workout?"
-                onConfirm={handleWorkoutLog}
-                visible={logOpen}
-                onClose={() => setLogOpen(false)}
-            />
         </View>
     )
 }
@@ -235,5 +241,11 @@ function themedStyles(colors: colorType) {
             fontSize: 36,
             fontFamily: 'OpenSans_700Bold',
         } as TextStyle,
+
+        settings: {
+            alignSelf: 'flex-end',
+            paddingHorizontal: 20,
+            marginBottom: 30,
+        },
     })
 }

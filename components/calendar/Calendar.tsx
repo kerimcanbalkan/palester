@@ -28,12 +28,14 @@ import {
 import Box from './Box'
 import { useState, useEffect } from 'react'
 import { AppData } from '@/api/api'
+import AntDesign from '@expo/vector-icons/AntDesign'
 
 interface calendarProps {
     data: AppData
 }
 
 export default function Calendar({ data }: calendarProps) {
+    console.log(data.programs)
     const today = startOfToday()
     const [month, setMonth] = useState(startOfMonth(today))
     const [days, setDays] = useState(
@@ -63,13 +65,14 @@ export default function Calendar({ data }: calendarProps) {
     return (
         <View style={styles.container}>
             <View style={styles.monthContainer}>
-                <Pressable
+                <AntDesign
+                    name="left"
+                    size={24}
+                    color={colors.fg}
                     onPress={() => {
                         setMonth(add(month, { months: -1 }))
                     }}
-                >
-                    <Text style={styles.text}>{'<'}</Text>
-                </Pressable>
+                />
 
                 <View
                     style={{
@@ -85,14 +88,14 @@ export default function Calendar({ data }: calendarProps) {
                         </Text>
                     )}
                 </View>
-
-                <Pressable
+                <AntDesign
+                    name="right"
+                    size={24}
+                    color={colors.fg}
                     onPress={() => {
                         setMonth(add(month, { months: 1 }))
                     }}
-                >
-                    <Text style={styles.text}>{'>'}</Text>
-                </Pressable>
+                />
             </View>
 
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -107,6 +110,13 @@ export default function Calendar({ data }: calendarProps) {
                 <View style={styles.datesContainer}>
                     {days.map((day, i) => {
                         // Determine variant for current month days
+                        const program = data.programs
+                            .sort(
+                                (a, b) =>
+                                    parseISO(a.date).getTime() -
+                                    parseISO(b.date).getTime()
+                            )
+                            .findLast((p) => !isBefore(day, parseISO(p.date)))
                         let variant:
                             | 'today'
                             | 'future'
@@ -118,13 +128,16 @@ export default function Calendar({ data }: calendarProps) {
                             | 'oldMissed'
                             | 'missed' = 'regular'
 
-                        if (isBefore(day, today) || isToday(day)) {
+                        if (
+                            (isBefore(day, today) && program != undefined) ||
+                            isToday(day)
+                        ) {
                             const dayName = format(
                                 day,
                                 'EEE'
                             ).toLocaleLowerCase()
                             const isWorkoutDay =
-                                data?.workoutDays.includes(dayName)
+                                program?.workoutDays.includes(dayName)
                             const isWorkoutDone = data?.workouts.some((w) =>
                                 isSameDay(day, parseISO(w))
                             )
@@ -161,7 +174,7 @@ export default function Calendar({ data }: calendarProps) {
                         if (isAfter(day, today) && isSameMonth(day, month)) {
                             variant = 'future'
                         } else if (
-                            isBefore(day, parseISO(data?.appStartDate))
+                            isBefore(day, parseISO(program?.date || ''))
                         ) {
                             variant = 'regular'
                         }

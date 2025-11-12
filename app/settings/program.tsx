@@ -4,20 +4,23 @@ import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
 import { useState } from 'react'
 import DayButton from '@/components/DayButton'
-import { useRouter } from 'expo-router'
 import { useAlert } from '@/context/AlertContext'
-import { TrainingProgram } from '@/api/api'
+import { addProgram, TrainingProgram } from '@/api/api'
 import { startOfToday } from 'date-fns'
+import { useSQLiteContext } from 'expo-sqlite'
+import { useRouter } from 'expo-router'
 
-export default function Program() {
+export default function ProgramScreen() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
-    const router = useRouter()
     const { showAlert } = useAlert()
 
     const [workoutDays, setWorkoutDays] = useState<string[]>([])
-    const [program, setProgram] = useState<TrainingProgram[]>()
+    const [program, setProgram] = useState<TrainingProgram>()
+    const db = useSQLiteContext()
+
+    const router = useRouter()
 
     function handleDayToggle(day: string, active: boolean) {
         setWorkoutDays((prev) => {
@@ -25,15 +28,16 @@ export default function Program() {
                 ? [...prev, day]
                 : prev.filter((d) => d !== day)
 
-            setProgram([
-                { date: startOfToday().toISOString(), workoutDays: newDays },
-            ])
+            setProgram({
+                date: startOfToday().toISOString(),
+                workoutDays: newDays,
+            })
 
             return newDays
         })
     }
 
-    function handleConfirm() {
+    async function handleSave() {
         if (workoutDays.length === 0) {
             showAlert(
                 'Error',
@@ -42,11 +46,23 @@ export default function Program() {
             )
             return
         }
-        console.log(workoutDays)
-        router.push({
-            pathname: '/setup/location',
-            params: { programs: JSON.stringify(program) },
-        })
+
+        if (!program) return
+
+        try {
+            await addProgram(db, program)
+            showAlert('success', 'New program saved successfully', 'success')
+        } catch (err) {
+            console.error('there has been error while saving program', err)
+            showAlert(
+                'error',
+                'Something went wrong! Could not save new program',
+                'error'
+            )
+            return
+        } finally {
+            router.replace('/')
+        }
     }
 
     return (
@@ -69,11 +85,7 @@ export default function Program() {
                 </View>
             </View>
 
-            <CustomButton
-                text="Confirm"
-                onPress={handleConfirm}
-                size={24}
-            />
+            <CustomButton text="Save" onPress={handleSave} size={24} />
         </View>
     )
 }

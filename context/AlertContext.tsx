@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import CustomAlert from '@/components/CustomAlert'
 
-export type AlertType = 'info' | 'warning' | 'error'
+export type AlertType = 'info' | 'warning' | 'error' | 'success'
 
 interface AlertData {
     title: string

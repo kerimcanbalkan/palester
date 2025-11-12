@@ -11,17 +11,13 @@ import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
 import Logo from '@/components/Logo'
 import { useState } from 'react'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
-import { startOfToday } from 'date-fns'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { initData } from '@/api/api'
+import { updateGymLocation } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
-import { AppData } from '@/api/api'
 
 export default function Location() {
     const colorScheme = useColorScheme()
-    const params = useLocalSearchParams()
     const router = useRouter()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const [location, setLocation] = useState<{
@@ -45,28 +41,19 @@ export default function Location() {
             return
         }
 
-        const programs = JSON.parse((params.programs as string) || '[]')
-        const workouts: string[] = []
-        const data: AppData = {
-            id: 1,
-            gymLocation: location,
-            programs: programs,
-            workouts: workouts,
-        }
-
         try {
-            console.log('trying to initialize data', data)
-            await initData(db, data)
-            await AsyncStorage.setItem('setup_done', 'true')
-
-            router.replace('/')
+            console.log('updating gym location to ', location)
+            await updateGymLocation(db, location)
+            showAlert('success', 'New location saved successfully', 'success')
         } catch (err) {
-            console.error(err)
+            console.error('error while saving location to db', err)
             showAlert(
                 'Error',
-                'Something went wrong! Could not save user data, try again later',
+                'Something went wrong! Could not update gym location',
                 'error'
             )
+        } finally {
+            router.replace('/')
         }
     }
 
@@ -81,7 +68,7 @@ export default function Location() {
                     <Map onLocationSelect={handleLocationSelect} />
                 </View>
             </View>
-            <CustomButton text="confirm" size={24} onPress={handleConfirm} />
+            <CustomButton text="save" size={24} onPress={handleConfirm} />
         </View>
     )
 }

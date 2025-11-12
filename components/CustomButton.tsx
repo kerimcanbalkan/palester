@@ -40,6 +40,7 @@ function themedStyles(colors: colorType, size: number) {
             fontFamily: 'OpenSans_700Bold',
             textTransform: 'uppercase',
             color: colors.bg,
+            paddingHorizontal: 10,
         } as TextStyle,
     })
 }
