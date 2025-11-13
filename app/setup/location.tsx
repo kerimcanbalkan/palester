@@ -56,8 +56,6 @@ export default function Location() {
             console.log('trying to initialize data', data)
             await initData(db, data)
             await AsyncStorage.setItem('setup_done', 'true')
-
-            router.replace('/')
         } catch (err) {
             console.error(err)
             showAlert(
@@ -65,6 +63,9 @@ export default function Location() {
                 'Something went wrong! Could not save user data, try again later',
                 'error'
             )
+        } finally {
+            // Redirect to /
+            router.replace('/')
         }
     }
 

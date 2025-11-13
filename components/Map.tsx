@@ -30,17 +30,19 @@ export default function Map({ onLocationSelect }: MapProps) {
             eventType === WebViewLeafletEvents.ON_MAP_TOUCHED &&
             payload?.touchLatLng
         ) {
-            // send coordinates to parent
-            onLocationSelect?.(locationMarker?.position)
+            const newPosition = {
+                lat: payload.touchLatLng.lat,
+                lng: payload.touchLatLng.lng,
+            }
 
             setlocationMarker({
-                position: {
-                    lat: payload.touchLatLng.lat,
-                    lng: payload.touchLatLng.lng,
-                },
+                position: newPosition,
                 size: [32, 32],
                 icon: '📍',
             })
+
+            // send coordinates to parent
+            onLocationSelect?.(newPosition)
         }
     }
 
