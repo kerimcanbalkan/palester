@@ -33,8 +33,8 @@ export default function Index() {
     const [data, setData] = useState<AppData | null>(null)
     const [userLocation, setUserLocation] = useState<LatLng | null>(null)
     const [logOpen, setLogOpen] = useState(false)
-    const [locationError, setLocationError] = useState(false)
-    const [dataError, setDataError] = useState(false)
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const fetchData = async () => {
         try {
@@ -42,13 +42,14 @@ export default function Index() {
             setData(result)
         } catch (error) {
             console.error('Failed to fetch app data:', error)
-            setDataError(true)
+            setError(true)
         }
     }
 
     useEffect(() => {
         const getCurrentLocation = async () => {
             try {
+            // Get location permissions
                 const { status } =
                     await Location.requestForegroundPermissionsAsync()
 
@@ -58,7 +59,7 @@ export default function Index() {
                         'We need access to your location to verify that you’re at the gym. Please enable it in Settings and try again.',
                         'error'
                     )
-                    setLocationError(true)
+                    setError(true)
                     return false
                 }
 
@@ -70,7 +71,7 @@ export default function Index() {
                         'Your GPS or location services are turned off. Please enable them and try again.',
                         'error'
                     )
-                    setLocationError(true)
+                    setError(true)
                     return false
                 }
                 const location = await Location.getCurrentPositionAsync({})
@@ -78,9 +79,15 @@ export default function Index() {
                     lat: location.coords.latitude,
                     lng: location.coords.longitude,
                 })
+
+                // Get data
+                const result = await getData(db)
+                setData(result)
             } catch (error) {
-                setLocationError(true)
+                setError(true)
                 console.error('Error getting location:', error)
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -132,12 +139,11 @@ export default function Index() {
         }
     }
 
-    //
-    // if (!location || !data) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading />
+    }
 
-    if (locationError) {
+    if (error) {
         return (
             <View
                 style={{
@@ -165,43 +171,9 @@ export default function Index() {
                             color: colors.fg,
                         }}
                     >
-                        You should allow location services for app to work
-                        correctly.
+                        Opps! Something wen't wrong. Try again later.
                     </Text>
                 </View>
-            </View>
-        )
-    }
-
-    if (dataError) {
-        return (
-            <View
-                style={{
-                    paddingHorizontal: 5,
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize: 120,
-                        textAlign: 'center',
-                        textOverflow: 'visible',
-                        color: colors.fg,
-                    }}
-                >
-                    ⚠︎
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 24,
-                        textOverflow: 'visible',
-                        textAlign: 'center',
-                        color: colors.fg,
-                    }}
-                >
-                    Something went wrong! Could not get user data.
-                </Text>
             </View>
         )
     }
