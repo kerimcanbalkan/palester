@@ -28,24 +28,25 @@ export default function Index() {
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const db = useSQLiteContext()
-    const [data, setData] = useState<Awaited<ReturnType<AppData>> | null>(null)
+    const { showAlert } = useAlert()
+
+    const [data, setData] = useState<AppData | null>(null)
     const [userLocation, setUserLocation] = useState<LatLng | null>(null)
     const [logOpen, setLogOpen] = useState(false)
-    const { showAlert } = useAlert()
     const [locationError, setLocationError] = useState(false)
     const [dataError, setDataError] = useState(false)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await getData(db)
-                setData(result)
-            } catch (error) {
-                console.error('Failed to fetch app data:', error)
-                setDataError(true)
-            }
+    const fetchData = async () => {
+        try {
+            const result = await getData(db)
+            setData(result)
+        } catch (error) {
+            console.error('Failed to fetch app data:', error)
+            setDataError(true)
         }
+    }
 
+    useEffect(() => {
         const getCurrentLocation = async () => {
             try {
                 const { status } =
@@ -83,8 +84,8 @@ export default function Index() {
             }
         }
 
-        fetchData()
         getCurrentLocation()
+        fetchData()
     })
 
     async function handleWorkoutLog() {
@@ -130,6 +131,11 @@ export default function Index() {
             )
         }
     }
+
+    //
+    // if (!location || !data) {
+    //     return <Loading/>
+    // }
 
     if (locationError) {
         return (
