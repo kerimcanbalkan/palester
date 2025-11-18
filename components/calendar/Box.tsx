@@ -5,15 +5,15 @@ import { Pressable, StyleSheet, Text, useColorScheme } from 'react-native'
 interface Props {
     date: Date
     variant:
-        | 'completed'
-        | 'rest'
-        | 'missed'
-        | 'today'
-        | 'future'
-        | 'regular'
-        | 'oldCompleted'
-        | 'oldMissed'
-        | 'oldRest'
+    | 'completed'
+    | 'rest'
+    | 'missed'
+    | 'today'
+    | 'future'
+    | 'regular'
+    | 'oldCompleted'
+    | 'oldMissed'
+    | 'oldRest'
 }
 
 export default function Box({ date, variant }: Props) {
@@ -33,7 +33,7 @@ export default function Box({ date, variant }: Props) {
                 variant === 'oldCompleted' && styles.regular,
                 variant === 'oldMissed' && styles.regular,
                 variant === 'oldRest' && styles.regular,
-                today ? styles.today : '',
+                today ? styles.today : ''
             ]}
         >
             <Text
@@ -60,10 +60,12 @@ function themedStyles(colors: colorType) {
     return StyleSheet.create({
         textFg: {
             color: colors.fg,
+            fontWeight: 'bold',
         },
 
         textBg: {
             color: colors.bg,
+            fontWeight: 'bold',
         },
 
         textRed: {
@@ -89,7 +91,7 @@ function themedStyles(colors: colorType) {
 
         today: {
             borderWidth: 2,
-            borderColor: colors.fg2,
+            borderColor: colors.fg,
         },
 
         completed: {

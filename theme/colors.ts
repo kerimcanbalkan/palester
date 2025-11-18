@@ -3,7 +3,8 @@ export const darkColors = {
     bg2: '#504945',
     fg: '#ebdbb2',
     green: '#b8bb26',
-    darkGreen: '#98971a',
+    darkGreen: '#717915',
+    blue: '#458588',
     red: '#cc241d',
     fg2: '#fbf1c7',
 }
@@ -15,6 +16,7 @@ export const lightColors = {
     green: '#689d6a',
     darkGreen: '#427b58',
     red: '#cc241d',
+    blue: '#458588',
     fg2: '#282828',
 }
 
