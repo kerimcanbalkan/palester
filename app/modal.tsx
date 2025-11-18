@@ -1,9 +1,4 @@
-import {
-    View,
-    StyleSheet,
-    ViewStyle,
-    useColorScheme,
-} from 'react-native'
+import { View, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
 import { Link } from 'expo-router'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'

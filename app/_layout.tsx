@@ -1,7 +1,6 @@
 import { StyleSheet, useColorScheme } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite'
-import { Slot, usePathname, useRouter } from 'expo-router'
+import { Slot, useRouter } from 'expo-router'
 import {
     useFonts,
     OpenSans_400Regular,
@@ -10,7 +9,6 @@ import {
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Loading from '@/components/Loading'
-import { useEffect, useState } from 'react'
 import { AlertProvider } from '@/context/AlertContext'
 import AppErrorBoundary from '@/error-boundary/AppErrorBoundary'
 import ErrorFallback from '@/error-boundary/ErrorFallback'
@@ -20,18 +18,6 @@ export default function RootLayout() {
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const router = useRouter()
-    const pathname = usePathname()
-
-    // Redirect if setup is not done
-    useEffect(() => {
-        const checkSetup = async () => {
-            const setupDone = await AsyncStorage.getItem('setup_done')
-            if (!setupDone && pathname === '/') {
-                router.replace('/setup/program')
-            }
-        }
-        checkSetup()
-    }, [])
 
     const [fontsLoaded] = useFonts({
         OpenSans_400Regular,

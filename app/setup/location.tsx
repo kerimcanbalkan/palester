@@ -64,8 +64,8 @@ export default function Location() {
                 'error'
             )
         } finally {
-            // Redirect to /
-            router.replace('/')
+            // Redirect to /home
+            router.replace('/home')
         }
     }
 

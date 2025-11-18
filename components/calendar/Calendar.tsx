@@ -34,7 +34,6 @@ interface calendarProps {
 }
 
 export default function Calendar({ data }: calendarProps) {
-    console.log(data.programs)
     const today = startOfToday()
     const [month, setMonth] = useState(startOfMonth(today))
     const [days, setDays] = useState(
