@@ -79,7 +79,12 @@ export default function Map({ onLocationSelect }: MapProps) {
                     return
                 }
 
-                const location = await Location.getCurrentPositionAsync({})
+                let location = await Location.getLastKnownPositionAsync({})
+                if (!location)
+                    location = await Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.Low,
+                        timeInterval: 1000,
+                    })
                 if (isMounted) {
                     setUserLocation({
                         lat: location.coords.latitude,
@@ -97,13 +102,12 @@ export default function Map({ onLocationSelect }: MapProps) {
             }
         }
 
-        loadHtml()
-        getCurrentLocation()
+        Promise.allSettled([loadHtml(), getCurrentLocation()])
 
         return () => {
             isMounted = false
         }
-    })
+    }, [])
 
     if (!webViewContent || !userLocation) {
         return <Loading />
