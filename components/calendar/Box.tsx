@@ -60,12 +60,10 @@ function themedStyles(colors: colorType) {
     return StyleSheet.create({
         textFg: {
             color: colors.fg,
-            fontWeight: 'bold',
         },
 
         textBg: {
             color: colors.bg,
-            fontWeight: 'bold',
         },
 
         textRed: {
