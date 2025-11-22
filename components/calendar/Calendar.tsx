@@ -181,6 +181,41 @@ export default function Calendar({ data }: calendarProps) {
                     })}
                 </View>
             </View>
+            <View
+                style={styles.legendContainer}
+            >
+                <View
+                    style={styles.legend}
+                >
+                    <Text
+                        style={[styles.legendBox, { backgroundColor: colors.green }]}
+                    >
+                        {' '}
+                    </Text>
+                    <Text style={{ color: colors.fg }}>Done</Text>
+                </View>
+                <View
+                    style={styles.legend}
+                >
+                    <Text
+                        style={[
+                            styles.legendBox,
+                            { backgroundColor: colors.darkGreen },
+                        ]}
+                    >
+                        {' '}
+                    </Text>
+                    <Text style={{ color: colors.fg }}>Rest</Text>
+                </View>
+                <View
+                    style={styles.legend}
+                >
+                    <Text style={[styles.legendBox, { backgroundColor: colors.red }]}>
+                        {' '}
+                    </Text>
+                    <Text style={{ color: colors.fg }}>Missed</Text>
+                </View>
+            </View>
         </View>
     )
 }
@@ -234,5 +269,26 @@ function themedStyles(colors: colorType) {
             textTransform: 'uppercase',
             fontSize: 18,
         } as TextStyle,
+
+        legendBox: {
+            borderRadius: 5,
+            aspectRatio: 1,
+            width: 15,
+            height: 15,
+        },
+
+        legendContainer: {
+            flexDirection: 'row',
+            gap: 20,
+            width: '100%',
+            marginTop: 10,
+        },
+
+        legend: {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 3,
+        }
     })
 }
