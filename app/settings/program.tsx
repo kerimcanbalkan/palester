@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, useColorScheme } from 'react-native'
+import { View, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
@@ -9,6 +9,7 @@ import { addProgram, TrainingProgram } from '@/api/api'
 import { startOfToday } from 'date-fns'
 import { useSQLiteContext } from 'expo-sqlite'
 import { useRouter } from 'expo-router'
+import CustomText from '@/components/CustomText'
 
 export default function ProgramScreen() {
     const colorScheme = useColorScheme()
@@ -69,8 +70,10 @@ export default function ProgramScreen() {
         <View style={styles.container}>
             <Logo size={46} />
             <View style={{ alignItems: 'center' }}>
-                <Text style={styles.header}>Program</Text>
-                <Text style={styles.text}>Which Days will you go to gym?</Text>
+                <CustomText style={styles.header}>Program</CustomText>
+                <CustomText style={styles.text}>
+                    Which Days will you go to gym?
+                </CustomText>
 
                 <View style={styles.buttonContainer}>
                     {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(

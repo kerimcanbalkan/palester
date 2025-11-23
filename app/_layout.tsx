@@ -12,6 +12,10 @@ import Loading from '@/components/Loading'
 import { AlertProvider } from '@/context/AlertContext'
 import AppErrorBoundary from '@/error-boundary/AppErrorBoundary'
 import ErrorFallback from '@/error-boundary/ErrorFallback'
+import { Suspense, useEffect } from 'react'
+import * as SplashScreen from 'expo-splash-screen'
+
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
     const colorScheme = useColorScheme()
@@ -19,14 +23,16 @@ export default function RootLayout() {
     const styles = themedStyles(colors)
     const router = useRouter()
 
-    const [fontsLoaded] = useFonts({
+    const [fontsLoaded, error] = useFonts({
         OpenSans_400Regular,
         OpenSans_700Bold,
     })
 
-    if (!fontsLoaded) {
-        return <Loading />
-    }
+    useEffect(() => {
+        if (fontsLoaded || error) {
+            SplashScreen.hideAsync()
+        }
+    }, [fontsLoaded, error])
 
     const initializeDatabase = async (db: SQLiteDatabase) => {
         await db.execAsync(`
@@ -49,16 +55,18 @@ export default function RootLayout() {
                 />
             }
         >
-            <SQLiteProvider
-                databaseName="app_data.db"
-                onInit={initializeDatabase}
-            >
-                <AlertProvider>
-                    <SafeAreaView style={styles.container}>
-                        <Slot />
-                    </SafeAreaView>
-                </AlertProvider>
-            </SQLiteProvider>
+            <Suspense fallback={<Loading />}>
+                <SQLiteProvider
+                    databaseName="app_data.db"
+                    onInit={initializeDatabase}
+                >
+                    <AlertProvider>
+                        <SafeAreaView style={styles.container}>
+                            <Slot />
+                        </SafeAreaView>
+                    </AlertProvider>
+                </SQLiteProvider>
+            </Suspense>
         </AppErrorBoundary>
     )
 }

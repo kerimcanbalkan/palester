@@ -1,5 +1,4 @@
 import {
-    Text,
     View,
     StyleSheet,
     useColorScheme,
@@ -22,6 +21,7 @@ import { useAlert } from '@/context/AlertContext'
 import { startOfToday } from 'date-fns'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link } from 'expo-router'
+import CustomText from '@/components/CustomText'
 
 export default function Home() {
     const colorScheme = useColorScheme()
@@ -157,7 +157,7 @@ export default function Home() {
                 }}
             >
                 <View>
-                    <Text
+                    <CustomText
                         style={{
                             fontSize: 120,
                             textAlign: 'center',
@@ -166,8 +166,8 @@ export default function Home() {
                         }}
                     >
                         ⚠︎
-                    </Text>
-                    <Text
+                    </CustomText>
+                    <CustomText
                         style={{
                             fontSize: 24,
                             textOverflow: 'visible',
@@ -176,7 +176,7 @@ export default function Home() {
                         }}
                     >
                         Opps! Something wen't wrong. Try again later.
-                    </Text>
+                    </CustomText>
                 </View>
             </View>
         )
@@ -196,7 +196,7 @@ export default function Home() {
                         overflow: 'visible',
                     }}
                 >
-                    <Text style={styles.header}>Activity</Text>
+                    <CustomText style={styles.header}>Activity</CustomText>
                     {data !== null ? <Calendar data={data} /> : <Loading />}
                 </View>
                 <CustomButton

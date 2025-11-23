@@ -3,7 +3,6 @@ import {
     View,
     StyleSheet,
     ViewStyle,
-    Text,
     TextStyle,
 } from 'react-native'
 import Map from '@/components/Map'
@@ -15,6 +14,7 @@ import { useRouter } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
 import { updateGymLocation } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
+import CustomText from '@/components/CustomText'
 
 export default function Location() {
     const colorScheme = useColorScheme()
@@ -63,7 +63,7 @@ export default function Location() {
         <View style={styles.container}>
             <Logo size={46} />
             <View style={{ alignItems: 'center' }}>
-                <Text style={styles.header}>GYM Location</Text>
+                <CustomText style={styles.header}>GYM Location</CustomText>
                 <View style={styles.mapContainer}>
                     <Map onLocationSelect={handleLocationSelect} />
                 </View>

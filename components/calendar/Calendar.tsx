@@ -1,7 +1,6 @@
 import { colorType, lightColors, darkColors } from '@/theme/colors'
 import {
     View,
-    Text,
     StyleSheet,
     ViewStyle,
     useColorScheme,
@@ -28,6 +27,7 @@ import Box from './Box'
 import { useState, useEffect } from 'react'
 import { AppData } from '@/api/api'
 import AntDesign from '@expo/vector-icons/AntDesign'
+import CustomText from '@/components/CustomText'
 
 interface calendarProps {
     data: AppData
@@ -79,11 +79,13 @@ export default function Calendar({ data }: calendarProps) {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={styles.text}>{format(month, 'MMMM')}</Text>
+                    <CustomText style={styles.text}>
+                        {format(month, 'MMMM')}
+                    </CustomText>
                     {!isSameYear(today, month) && (
-                        <Text style={{ fontSize: 16, color: colors.fg }}>
+                        <CustomText style={{ fontSize: 16, color: colors.fg }}>
                             {format(month, 'yyyy')}
-                        </Text>
+                        </CustomText>
                     )}
                 </View>
                 <AntDesign
@@ -99,9 +101,9 @@ export default function Calendar({ data }: calendarProps) {
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <View style={styles.weekContainer}>
                     {weekDays.map((day, i) => (
-                        <Text key={i} style={styles.weekText}>
+                        <CustomText key={i} style={styles.weekCustomText}>
                             {day}
-                        </Text>
+                        </CustomText>
                     ))}
                 </View>
 
@@ -181,39 +183,39 @@ export default function Calendar({ data }: calendarProps) {
                     })}
                 </View>
             </View>
-            <View
-                style={styles.legendContainer}
-            >
-                <View
-                    style={styles.legend}
-                >
-                    <Text
-                        style={[styles.legendBox, { backgroundColor: colors.green }]}
+            <View style={styles.legendContainer}>
+                <View style={styles.legend}>
+                    <CustomText
+                        style={[
+                            styles.legendBox,
+                            { backgroundColor: colors.green },
+                        ]}
                     >
                         {' '}
-                    </Text>
-                    <Text style={{ color: colors.fg }}>Done</Text>
+                    </CustomText>
+                    <CustomText style={{ color: colors.fg }}>Done</CustomText>
                 </View>
-                <View
-                    style={styles.legend}
-                >
-                    <Text
+                <View style={styles.legend}>
+                    <CustomText
                         style={[
                             styles.legendBox,
                             { backgroundColor: colors.darkGreen },
                         ]}
                     >
                         {' '}
-                    </Text>
-                    <Text style={{ color: colors.fg }}>Rest</Text>
+                    </CustomText>
+                    <CustomText style={{ color: colors.fg }}>Rest</CustomText>
                 </View>
-                <View
-                    style={styles.legend}
-                >
-                    <Text style={[styles.legendBox, { backgroundColor: colors.red }]}>
+                <View style={styles.legend}>
+                    <CustomText
+                        style={[
+                            styles.legendBox,
+                            { backgroundColor: colors.red },
+                        ]}
+                    >
                         {' '}
-                    </Text>
-                    <Text style={{ color: colors.fg }}>Missed</Text>
+                    </CustomText>
+                    <CustomText style={{ color: colors.fg }}>Missed</CustomText>
                 </View>
             </View>
         </View>
@@ -236,7 +238,7 @@ function themedStyles(colors: colorType) {
             gap: 10,
         },
 
-        weekText: {
+        weekCustomText: {
             color: colors.fg,
             textTransform: 'uppercase',
             fontFamily: 'OpenSans_400Regular',
@@ -289,6 +291,6 @@ function themedStyles(colors: colorType) {
             justifyContent: 'center',
             alignItems: 'center',
             gap: 3,
-        }
+        },
     })
 }

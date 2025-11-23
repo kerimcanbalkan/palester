@@ -1,9 +1,10 @@
+import CustomText from '@/components/CustomText'
 import Loading from '@/components/Loading'
 import { darkColors, lightColors } from '@/theme/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { View, Text, useColorScheme } from 'react-native'
+import { View, useColorScheme } from 'react-native'
 
 export default function Index() {
     const router = useRouter()
@@ -39,7 +40,7 @@ export default function Index() {
                 }}
             >
                 <View>
-                    <Text
+                    <CustomText
                         style={{
                             fontSize: 120,
                             textAlign: 'center',
@@ -48,8 +49,8 @@ export default function Index() {
                         }}
                     >
                         ⚠︎
-                    </Text>
-                    <Text
+                    </CustomText>
+                    <CustomText
                         style={{
                             fontSize: 24,
                             textOverflow: 'visible',
@@ -58,7 +59,7 @@ export default function Index() {
                         }}
                     >
                         Opps! Something wen't wrong. Try again later.
-                    </Text>
+                    </CustomText>
                 </View>
             </View>
         )

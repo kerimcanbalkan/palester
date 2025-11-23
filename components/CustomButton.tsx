@@ -1,12 +1,12 @@
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import {
     Pressable,
-    Text,
     useColorScheme,
     StyleSheet,
     ViewStyle,
     TextStyle,
 } from 'react-native'
+import CustomText from '@/components/CustomText'
 
 interface Props {
     text: string
@@ -20,7 +20,7 @@ export default function CustomButton({ text, onPress, size }: Props) {
 
     return (
         <Pressable onPress={onPress} style={styles.button}>
-            <Text style={styles.buttonText}>{text}</Text>
+            <CustomText style={styles.buttonCustomText}>{text}</CustomText>
         </Pressable>
     )
 }
@@ -29,13 +29,12 @@ function themedStyles(colors: colorType, size: number) {
     return StyleSheet.create({
         button: {
             backgroundColor: colors.fg,
-            fontFamily: 'OpenSans_700Bold',
             paddingHorizontal: 17,
             paddingVertical: 10,
             borderRadius: 10,
         } as ViewStyle,
 
-        buttonText: {
+        buttonCustomText: {
             fontSize: size,
             fontFamily: 'OpenSans_700Bold',
             textTransform: 'uppercase',
