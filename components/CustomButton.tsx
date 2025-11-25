@@ -32,6 +32,7 @@ function themedStyles(colors: colorType, size: number) {
             paddingHorizontal: 17,
             paddingVertical: 10,
             borderRadius: 10,
+            overflow: 'visible',
         } as ViewStyle,
 
         buttonCustomText: {
@@ -40,6 +41,7 @@ function themedStyles(colors: colorType, size: number) {
             textTransform: 'uppercase',
             color: colors.bg,
             paddingHorizontal: 10,
+            overflow: 'visible',
         } as TextStyle,
     })
 }

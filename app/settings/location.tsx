@@ -15,19 +15,17 @@ import { useSQLiteContext } from 'expo-sqlite'
 import { updateGymLocation } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
 import CustomText from '@/components/CustomText'
+import { LatLng } from 'react-native-leaflet-view'
 
 export default function Location() {
     const colorScheme = useColorScheme()
     const router = useRouter()
     const colors = colorScheme === 'light' ? lightColors : darkColors
-    const [location, setLocation] = useState<{
-        lat: number
-        lng: number
-    } | null>(null)
+    const [location, setLocation] = useState<LatLng | null>(null)
     const db = useSQLiteContext()
     const { showAlert } = useAlert()
 
-    const handleLocationSelect = (coords: { lat: number; lng: number }) => {
+    const handleLocationSelect = (coords: LatLng) => {
         setLocation(coords)
     }
 

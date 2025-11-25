@@ -1,5 +1,9 @@
-import { StyleSheet, useColorScheme } from 'react-native'
-import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite'
+import { Platform, StyleSheet, useColorScheme } from 'react-native'
+import {
+    SQLiteDatabase,
+    SQLiteProvider,
+    defaultDatabaseDirectory,
+} from 'expo-sqlite'
 import { Slot, useRouter } from 'expo-router'
 import {
     useFonts,
@@ -12,8 +16,9 @@ import Loading from '@/components/Loading'
 import { AlertProvider } from '@/context/AlertContext'
 import AppErrorBoundary from '@/error-boundary/AppErrorBoundary'
 import ErrorFallback from '@/error-boundary/ErrorFallback'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import * as SplashScreen from 'expo-splash-screen'
+import { Paths } from 'expo-file-system'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -33,6 +38,15 @@ export default function RootLayout() {
             SplashScreen.hideAsync()
         }
     }, [fontsLoaded, error])
+
+    const dbDirectory = useMemo(() => {
+        Paths
+        if (Platform.OS === 'ios') {
+            return Object.values(Paths.appleSharedContainers)?.[0]?.uri
+        }
+
+        return defaultDatabaseDirectory
+    }, [])
 
     const initializeDatabase = async (db: SQLiteDatabase) => {
         await db.execAsync(`
@@ -57,8 +71,9 @@ export default function RootLayout() {
         >
             <Suspense fallback={<Loading />}>
                 <SQLiteProvider
-                    databaseName="app_data.db"
+                    databaseName="palester_app_data.db"
                     onInit={initializeDatabase}
+                    directory={dbDirectory}
                 >
                     <AlertProvider>
                         <SafeAreaView style={styles.container}>

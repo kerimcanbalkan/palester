@@ -1,9 +1,5 @@
 import { SQLiteDatabase } from 'expo-sqlite'
-
-export type GymLocation = {
-    lat: number
-    lng: number
-} | null
+import { LatLng } from 'react-native-leaflet-view'
 
 export type AppDataSQL = {
     id: number
@@ -21,7 +17,7 @@ export type AppData = {
     id: number
     programs: TrainingProgram[]
     workouts: string[]
-    gymLocation: GymLocation
+    gymLocation: LatLng
 }
 
 export async function initData(db: SQLiteDatabase, data: AppData) {
@@ -72,12 +68,40 @@ export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
     )
 }
 
-export async function updateGymLocation(
-    db: SQLiteDatabase,
-    location: GymLocation
-) {
+export async function updateGymLocation(db: SQLiteDatabase, location: LatLng) {
     await db.runAsync(
         'UPDATE app_data SET gym_location = ? WHERE id = 1',
         JSON.stringify(location)
+    )
+}
+
+export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
+    const existing = await getData(db)
+
+    if (!existing) {
+        await initData(db, backup)
+        return
+    }
+
+    const existingPrograms = existing.programs ?? []
+    const incomingPrograms = backup.programs ?? []
+
+    const mergedPrograms = [...incomingPrograms, ...existingPrograms]
+
+    const existingWorkouts = existing.workouts ?? []
+    const incomingWorkouts = backup.workouts ?? []
+
+    const mergedWorkouts = [...incomingWorkouts, ...existingWorkouts]
+
+    // Prefer backup if it exists, otherwise keep existing
+    const gymLocation = backup.gymLocation ?? existing.gymLocation ?? null
+
+    await db.runAsync(
+        `UPDATE app_data 
+         SET programs = ?, workouts = ?, gym_location = ?
+         WHERE id = 1`,
+        JSON.stringify(mergedPrograms),
+        JSON.stringify(mergedWorkouts),
+        JSON.stringify(gymLocation)
     )
 }

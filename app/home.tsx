@@ -78,7 +78,7 @@ export default function Home() {
                         accuracy: Location.Accuracy.High,
                         timeInterval: 1000,
                     }),
-                    fetchData()
+                    fetchData(),
                 ])
 
                 setUserLocation({
@@ -86,7 +86,6 @@ export default function Home() {
                     lng: locationData.coords.longitude,
                 })
                 setData(appData)
-
             } catch (error) {
                 setError(true)
                 console.error('Error getting user data and location:', error)
