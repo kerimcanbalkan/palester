@@ -13,6 +13,7 @@ interface ModalProps {
     onConfirm: () => void
     visible: boolean
     onClose: () => void
+    loading?: boolean
 }
 
 export default function CustomModal({

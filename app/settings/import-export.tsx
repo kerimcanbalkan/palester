@@ -1,11 +1,8 @@
 import CustomText from '@/components/CustomText'
 import {
-    defaultDatabaseDirectory,
-    SQLiteDatabase,
     useSQLiteContext,
 } from 'expo-sqlite'
 import {
-    Platform,
     View,
     StyleSheet,
     ViewStyle,
@@ -16,10 +13,11 @@ import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
 import * as DocumentPicker from 'expo-document-picker'
 import { Directory, File, Paths } from 'expo-file-system/next'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useAlert } from '@/context/AlertContext'
-import { addWorkout, getData, mergeBackup } from '@/api/api'
+import { getData, mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
+import Loading from '@/components/Loading'
 
 export default function ImportExport() {
     const colorScheme = useColorScheme()
@@ -33,6 +31,7 @@ export default function ImportExport() {
     const [exportModal, setExportModal] = useState(false)
     const [importModal, setImportModal] = useState(false)
     const { showAlert } = useAlert()
+    const [loading, setLoading] = useState(false)
     const db = useSQLiteContext()
 
     const pickFile = async () => {
@@ -55,6 +54,8 @@ export default function ImportExport() {
 
     const importBackup = async () => {
         try {
+            setLoading(true)
+
             if (!importFile) {
                 showAlert(
                     'Import File Error',
@@ -74,11 +75,15 @@ export default function ImportExport() {
                 'Something went wrong while picking backup file please try again later.',
                 'error'
             )
+        } finally {
+            setLoading(false)
         }
     }
 
     const exportBackup = async () => {
         try {
+            setLoading(true)
+
             const data = await getData(db)
             const jsonString = JSON.stringify(data, null, 2)
             console.log(jsonString)
@@ -107,6 +112,8 @@ export default function ImportExport() {
                 'Something went wrong while exporting backup file please try again later.',
                 'error'
             )
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -125,6 +132,13 @@ export default function ImportExport() {
                 'error'
             )
         }
+    }
+
+
+    if (loading) {
+        return (
+            <Loading />
+        )
     }
 
     return (
@@ -150,7 +164,7 @@ export default function ImportExport() {
                 />
             </View>
             <View style={styles.importContainer}>
-                <CustomText style={styles.header}>Import App Data</CustomText>
+                <CustomText style={styles.header}>Export App Data</CustomText>
                 <View style={styles.pickerContainer}>
                     <CustomButton
                         text="Pick Directory"
@@ -198,14 +212,12 @@ function themedStyles(colors: colorType) {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 10,
+            gap: 6,
         } as ViewStyle,
 
         pickerContainer: {
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 3,
-            marginBottom: 10,
         } as ViewStyle,
 
         header: {

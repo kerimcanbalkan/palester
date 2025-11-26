@@ -18,7 +18,7 @@ export default function Index() {
             try {
                 const setupDone = await AsyncStorage.getItem('setup_done')
                 if (!setupDone) {
-                    router.replace('/setup/program')
+                    router.replace('/setup/import')
                 } else {
                     router.replace('/home')
                 }
