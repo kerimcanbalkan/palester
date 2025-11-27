@@ -1,47 +1,19 @@
 import {
-    Animated,
-    Easing,
     useColorScheme,
     View,
     StyleSheet,
+    ActivityIndicator,
 } from 'react-native'
-import { useRef, useEffect } from 'react'
-import Logo from './Logo'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 
 export default function Loading() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
-    const fadeAnim = useRef(new Animated.Value(1)).current
-
-    useEffect(() => {
-        const loop = Animated.loop(
-            Animated.sequence([
-                Animated.timing(fadeAnim, {
-                    toValue: 0.3,
-                    duration: 1000,
-                    easing: Easing.inOut(Easing.ease),
-                    useNativeDriver: true,
-                }),
-                Animated.timing(fadeAnim, {
-                    toValue: 1,
-                    duration: 1000,
-                    easing: Easing.inOut(Easing.ease),
-                    useNativeDriver: true,
-                }),
-            ])
-        )
-        loop.start()
-
-        return () => loop.stop()
-    }, [fadeAnim])
 
     return (
         <View style={styles.loadingContainer}>
-            <Animated.View style={{ opacity: fadeAnim }}>
-                <Logo size={20} />
-            </Animated.View>
+            <ActivityIndicator color={colors.fg} size='large' />
         </View>
     )
 }
