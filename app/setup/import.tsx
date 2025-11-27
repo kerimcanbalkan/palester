@@ -19,6 +19,7 @@ import { useSQLiteContext } from 'expo-sqlite'
 import { mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Import() {
     const colorScheme = useColorScheme()
@@ -65,6 +66,7 @@ export default function Import() {
             const file = new File(importFile.uri)
             const backupData = JSON.parse(file.textSync())
             await mergeBackup(db, backupData)
+            await AsyncStorage.setItem('setup_done', 'true')
             router.replace('/home')
         } catch (err) {
             console.error(err)
