@@ -75,7 +75,7 @@ export default function Home() {
                 }
                 const [locationData, appData] = await Promise.all([
                     Location.getCurrentPositionAsync({
-                        accuracy: Location.Accuracy.High,
+                        accuracy: Location.Accuracy.Highest,
                         timeInterval: 1000,
                     }),
                     fetchData(),
