@@ -6,15 +6,17 @@ import { useState } from 'react'
 import DayButton from '@/components/DayButton'
 import { useRouter } from 'expo-router'
 import { useAlert } from '@/context/AlertContext'
-import { TrainingProgram } from '@/api/api'
+import { AppData, initData, TrainingProgram } from '@/api/api'
 import { startOfToday } from 'date-fns'
 import CustomText from '@/components/CustomText'
+import { useSQLiteContext } from 'expo-sqlite'
 
 export default function Program() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const router = useRouter()
+    const db = useSQLiteContext()
     const { showAlert } = useAlert()
 
     const [workoutDays, setWorkoutDays] = useState<string[]>([])
@@ -34,7 +36,7 @@ export default function Program() {
         })
     }
 
-    function handleConfirm() {
+    const handleConfirm = async () => {
         if (workoutDays.length === 0) {
             showAlert(
                 'Error',
@@ -43,11 +45,35 @@ export default function Program() {
             )
             return
         }
-        console.log(workoutDays)
-        router.push({
-            pathname: '/setup/location',
-            params: { programs: JSON.stringify(program) },
-        })
+        if (!program) {
+            showAlert(
+                'Error',
+                'You should choose at least 1 workout day!',
+                'error'
+            )
+            return
+
+        }
+        const workouts: string[] = []
+        const data: AppData = {
+            id: 1,
+            programs: program,
+            workouts: workouts,
+        }
+
+        try {
+            console.log('trying to initialize data', data)
+            await initData(db, data)
+        } catch (err) {
+            console.error('something went wrong while initializing app data', err)
+            showAlert(
+                'Error',
+                'Something went wrong! Could not initialize user data, try again later',
+                'error'
+            )
+        } finally {
+            router.replace('/home')
+        }
     }
 
     return (

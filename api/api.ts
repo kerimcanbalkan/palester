@@ -1,11 +1,9 @@
 import { SQLiteDatabase } from 'expo-sqlite'
-import { LatLng } from 'react-native-leaflet-view'
 
 export type AppDataSQL = {
     id: number
     programs: string
     workouts: string
-    gym_location: string | null
 }
 
 export type TrainingProgram = {
@@ -17,15 +15,13 @@ export type AppData = {
     id: number
     programs: TrainingProgram[]
     workouts: string[]
-    gymLocation: LatLng
 }
 
 export async function initData(db: SQLiteDatabase, data: AppData) {
     await db.runAsync(
-        'INSERT INTO app_data (programs, workouts, gym_location) VALUES (?, ?, ?)',
+        'INSERT INTO app_data (programs, workouts) VALUES (?, ?)',
         JSON.stringify(data.programs),
         JSON.stringify(data.workouts),
-        JSON.stringify(data.gymLocation)
     )
 }
 
@@ -40,7 +36,6 @@ export async function getData(db: SQLiteDatabase): Promise<AppData | null> {
         id: row.id,
         programs: JSON.parse(row.programs || '[]'),
         workouts: JSON.parse(row.workouts || '[]'),
-        gymLocation: row.gym_location ? JSON.parse(row.gym_location) : null,
     }
 }
 
@@ -68,13 +63,6 @@ export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
     )
 }
 
-export async function updateGymLocation(db: SQLiteDatabase, location: LatLng) {
-    await db.runAsync(
-        'UPDATE app_data SET gym_location = ? WHERE id = 1',
-        JSON.stringify(location)
-    )
-}
-
 export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
     const existing = await getData(db)
 
@@ -93,15 +81,11 @@ export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
 
     const mergedWorkouts = [...incomingWorkouts, ...existingWorkouts]
 
-    // Prefer backup if it exists, otherwise keep existing
-    const gymLocation = backup.gymLocation ?? existing.gymLocation ?? null
-
     await db.runAsync(
         `UPDATE app_data 
          SET programs = ?, workouts = ?, gym_location = ?
          WHERE id = 1`,
         JSON.stringify(mergedPrograms),
         JSON.stringify(mergedWorkouts),
-        JSON.stringify(gymLocation)
     )
 }
