@@ -10,6 +10,7 @@ import { AppData, initData, TrainingProgram } from '@/api/api'
 import { startOfToday } from 'date-fns'
 import CustomText from '@/components/CustomText'
 import { useSQLiteContext } from 'expo-sqlite'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Program() {
     const colorScheme = useColorScheme()
@@ -64,6 +65,7 @@ export default function Program() {
         try {
             console.log('trying to initialize data', data)
             await initData(db, data)
+            await AsyncStorage.setItem('setup_done', 'true')
         } catch (err) {
             console.error('something went wrong while initializing app data', err)
             showAlert(
