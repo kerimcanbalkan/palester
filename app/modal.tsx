@@ -18,13 +18,9 @@ export default function Modal() {
                     <Link href="/settings/program" style={styles.link}>
                         Change Program
                     </Link>
-                    <Link href="/settings/location" style={styles.link}>
-                        Change Location
-                    </Link>
                     <Link href="/settings/import-export" style={styles.link}>
                         Import/Export
                     </Link>
-
                 </View>
             </View>
         </View>
@@ -47,7 +43,7 @@ function themedStyles(colors: colorType) {
             borderWidth: 1,
             borderColor: colors.fg,
             margin: 10,
-            textAlign: 'center'
+            textAlign: 'center',
         },
 
         close: {
