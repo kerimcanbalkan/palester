@@ -6,22 +6,49 @@ export type AppDataSQL = {
     workouts: string
 }
 
+export type LiftQuantity =
+    | { type: 'reps'; reps: number }
+    | { type: 'time'; seconds: number } // s
+
+export type Weight = {
+    weight: number
+    unit: "kg" | "lbs"
+}
+
+export type Lift = {
+    id: number
+    name: string
+    sets: number
+    quantity: LiftQuantity
+    weight?: Weight
+}
+
+export type Session = {
+    day: string
+    lifts: Lift[]
+}
+
 export type TrainingProgram = {
     date: string
-    workoutDays: string[]
+    sessions: Session[]
+}
+
+export type Workout = {
+    date: string
+    lifts: Lift[]
 }
 
 export type AppData = {
     id: number
     programs: TrainingProgram[]
-    workouts: string[]
+    workouts: Workout[]
 }
 
 export async function initData(db: SQLiteDatabase, data: AppData) {
     await db.runAsync(
         'INSERT INTO app_data (programs, workouts) VALUES (?, ?)',
         JSON.stringify(data.programs),
-        JSON.stringify(data.workouts),
+        JSON.stringify(data.workouts)
     )
 }
 
@@ -39,19 +66,25 @@ export async function getData(db: SQLiteDatabase): Promise<AppData | null> {
     }
 }
 
-export async function addWorkout(db: SQLiteDatabase, date: string) {
+export async function addWorkout(db: SQLiteDatabase, workout: Workout) {
     const data = await getData(db)
-    const workouts: string[] = data ? data.workouts : []
+    const workouts: Workout[] = data?.workouts ?? []
 
-    if (!workouts.includes(date)) {
-        workouts.push(date)
-        await db.runAsync(
-            'UPDATE app_data SET workouts = ? WHERE id = 1',
-            JSON.stringify(workouts)
-        )
+    const index = workouts.findIndex((w) => w.date === workout.date)
+
+    if (index !== -1) {
+        // update existing workout
+        workouts[index] = workout
+    } else {
+        // add new workout
+        workouts.push(workout)
     }
-}
 
+    await db.runAsync(
+        'UPDATE app_data SET workouts = ? WHERE id = 1',
+        JSON.stringify(workouts)
+    )
+}
 export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
     const data = await getData(db)
     const programs: TrainingProgram[] = data ? data.programs : []
@@ -83,9 +116,9 @@ export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
 
     await db.runAsync(
         `UPDATE app_data 
-         SET programs = ?, workouts = ?, gym_location = ?
+         SET programs = ?, workouts = ?
          WHERE id = 1`,
         JSON.stringify(mergedPrograms),
-        JSON.stringify(mergedWorkouts),
+        JSON.stringify(mergedWorkouts)
     )
 }

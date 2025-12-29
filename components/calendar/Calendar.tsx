@@ -25,9 +25,11 @@ import {
 } from 'date-fns'
 import Box from './Box'
 import { useState, useEffect } from 'react'
-import { AppData } from '@/api/api'
+import { AppData, Session } from '@/api/api'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import CustomText from '@/components/CustomText'
+import { Workout } from '@/api/api'
+import WorkoutModal from '../WorkoutModal'
 
 interface calendarProps {
     data: AppData
@@ -42,6 +44,16 @@ export default function Calendar({ data }: calendarProps) {
             end: endOfWeek(endOfMonth(month)),
         })
     )
+    const workouts = data.workouts
+    const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null)
+    const [workoutModal, setWorkoutModal] = useState(false)
+
+    const handleBoxPress = (date: Date) => {
+        const workout = workouts.find((w) => isSameDay(w.date, date))
+        if (!workout) return
+        setActiveWorkout(workout)
+        setWorkoutModal(true)
+    }
 
     useEffect(() => {
         const updatedDays = eachDayOfInterval({
@@ -136,10 +148,11 @@ export default function Calendar({ data }: calendarProps) {
                                 day,
                                 'EEE'
                             ).toLocaleLowerCase()
-                            const isWorkoutDay =
-                                program?.workoutDays.includes(dayName)
+                            const isWorkoutDay = program?.sessions.some(
+                                (s: Session) => s.day === dayName
+                            )
                             const isWorkoutDone = data?.workouts.some((w) =>
-                                isSameDay(day, parseISO(w))
+                                isSameDay(day, parseISO(w.date))
                             )
 
                             if (isWorkoutDone) {
@@ -158,12 +171,12 @@ export default function Calendar({ data }: calendarProps) {
 
                             data?.workouts.forEach((w) => {
                                 if (
-                                    isSameDay(day, parseISO(w)) &&
+                                    isSameDay(day, parseISO(w.date)) &&
                                     isSameMonth(day, month)
                                 ) {
                                     variant = 'completed'
                                 } else if (
-                                    isSameDay(day, parseISO(w)) &&
+                                    isSameDay(day, parseISO(w.date)) &&
                                     !isSameMonth(day, month)
                                 ) {
                                     variant = 'oldCompleted'
@@ -179,7 +192,14 @@ export default function Calendar({ data }: calendarProps) {
                             variant = 'regular'
                         }
 
-                        return <Box key={i} date={day} variant={variant} />
+                        return (
+                            <Box
+                                key={i}
+                                date={day}
+                                variant={variant}
+                                onPress={handleBoxPress}
+                            />
+                        )
                     })}
                 </View>
             </View>
@@ -218,6 +238,16 @@ export default function Calendar({ data }: calendarProps) {
                     <CustomText style={{ color: colors.fg }}>Missed</CustomText>
                 </View>
             </View>
+            {activeWorkout && (
+                <WorkoutModal
+                    visible={workoutModal}
+                    onClose={() => {
+                        setWorkoutModal(false)
+                        setActiveWorkout(null)
+                    }}
+                    workout={activeWorkout}
+                />
+            )}
         </View>
     )
 }

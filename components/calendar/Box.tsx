@@ -4,19 +4,20 @@ import { Pressable, StyleSheet, Text, useColorScheme } from 'react-native'
 
 interface Props {
     date: Date
+    onPress: (date: Date) => void
     variant:
-    | 'completed'
-    | 'rest'
-    | 'missed'
-    | 'today'
-    | 'future'
-    | 'regular'
-    | 'oldCompleted'
-    | 'oldMissed'
-    | 'oldRest'
+        | 'completed'
+        | 'rest'
+        | 'missed'
+        | 'today'
+        | 'future'
+        | 'regular'
+        | 'oldCompleted'
+        | 'oldMissed'
+        | 'oldRest'
 }
 
-export default function Box({ date, variant }: Props) {
+export default function Box({ date, variant, onPress }: Props) {
     const colorscheme = useColorScheme()
     const colors = colorscheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -33,8 +34,9 @@ export default function Box({ date, variant }: Props) {
                 variant === 'oldCompleted' && styles.regular,
                 variant === 'oldMissed' && styles.regular,
                 variant === 'oldRest' && styles.regular,
-                today ? styles.today : ''
+                today ? styles.today : '',
             ]}
+            onPress={() => onPress(date)}
         >
             <Text
                 style={[
