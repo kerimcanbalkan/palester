@@ -11,14 +11,14 @@ import CustomButton from '@/components/CustomButton'
 import Calendar from '@/components/calendar/Calendar'
 import { useEffect, useState } from 'react'
 import { useSQLiteContext } from 'expo-sqlite'
-import { getData, AppData, addWorkout } from '@/api/api'
+import { getData, AppData, addWorkout, Session, Workout } from '@/api/api'
 import Loading from '@/components/Loading'
-import CustomModal from '@/components/CustomModal'
 import { useAlert } from '@/context/AlertContext'
-import { startOfToday } from 'date-fns'
+import { format, isSameDay, startOfToday } from 'date-fns'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link } from 'expo-router'
 import CustomText from '@/components/CustomText'
+import WorkoutLogModal from '@/components/WorkoutLogModal'
 
 export default function Home() {
     const colorScheme = useColorScheme()
@@ -31,6 +31,14 @@ export default function Home() {
     const [logOpen, setLogOpen] = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(true)
+
+    const today = startOfToday()
+    const todayName = format(today, 'EEE').toLocaleLowerCase()
+    const [sessionToday, setSessionToday] = useState<Session>({
+        day: todayName,
+        lifts: [],
+    })
+    const [workoutToday, setWorkoutToday] = useState<Workout | null>(null)
 
     const fetchData = async () => {
         try {
@@ -46,8 +54,28 @@ export default function Home() {
             setLoading(true)
             setError(false)
             try {
-                const appData = await fetchData()
+                // Get app data
+                const appData: AppData | null = await fetchData()
+                if (!appData) {
+                    throw new Error('App data is null')
+                }
                 setData(appData)
+
+                // Set todays session
+                const session = appData.programs[
+                    appData.programs.length - 1
+                ].sessions.find((s) => s.day === todayName)
+                if (!session) {
+                    setSessionToday({ day: todayName, lifts: [] })
+                    return
+                }
+                setSessionToday(session)
+
+                // Check if logged workout exists
+                const workout = appData.workouts.find((w) => isSameDay(today, w.date))
+                if (!workout) return
+                setWorkoutToday(workout)
+
             } catch (error) {
                 setError(true)
                 console.error('Error getting user data: ', error)
@@ -59,10 +87,10 @@ export default function Home() {
         getUserData()
     }, [])
 
-    async function handleWorkoutLog() {
-        const date = startOfToday().toISOString()
+    async function handleWorkoutLog(workout: Workout) {
         try {
-            await addWorkout(db, date)
+            await addWorkout(db, workout)
+            showAlert('Success', 'Workout Logged Successfully', 'success')
             const data = await fetchData()
             setData(data)
         } catch (err) {
@@ -132,15 +160,19 @@ export default function Home() {
                     {data !== null ? <Calendar data={data} /> : <Loading />}
                 </View>
                 <CustomButton
-                    text="Log Workout"
+                    text={workoutToday ? "Update Workout" : "Log Workout"}
                     onPress={() => setLogOpen(true)}
                     size={24}
                 />
-                <CustomModal
-                    dialog="Are you sure you want to log this workout?"
-                    onConfirm={handleWorkoutLog}
+                <WorkoutLogModal
                     visible={logOpen}
-                    onClose={() => setLogOpen(false)}
+                    onClose={() => {
+                        setLogOpen(false)
+                    }}
+                    onSave={handleWorkoutLog}
+                    session={sessionToday}
+                    {...(workoutToday && { workout: workoutToday })}
+
                 />
             </View>
         </View>

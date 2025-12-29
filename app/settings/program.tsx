@@ -2,57 +2,101 @@ import { View, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DayButton from '@/components/DayButton'
-import { useAlert } from '@/context/AlertContext'
-import { addProgram, TrainingProgram } from '@/api/api'
-import { startOfToday } from 'date-fns'
-import { useSQLiteContext } from 'expo-sqlite'
 import { useRouter } from 'expo-router'
+import { useAlert } from '@/context/AlertContext'
+import {
+    addProgram,
+    getData,
+    Session,
+    TrainingProgram,
+} from '@/api/api'
+import { startOfToday } from 'date-fns'
 import CustomText from '@/components/CustomText'
+import { useSQLiteContext } from 'expo-sqlite'
+import SessionModal from '@/components/SessionModal'
+import Loading from '@/components/Loading'
 
-export default function ProgramScreen() {
+export default function Program() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
+    const router = useRouter()
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const db = useSQLiteContext()
     const { showAlert } = useAlert()
 
-    const [workoutDays, setWorkoutDays] = useState<string[]>([])
-    const [program, setProgram] = useState<TrainingProgram>()
-    const db = useSQLiteContext()
+    const [trainingProgram, setTrainingProgram] = useState<TrainingProgram>({
+        date: startOfToday().toISOString(),
+        sessions: [],
+    })
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
-    const router = useRouter()
+    const [activeDay, setActiveDay] = useState<string | null>(null)
 
-    function handleDayToggle(day: string, active: boolean) {
-        setWorkoutDays((prev) => {
-            const newDays = active
-                ? [...prev, day]
-                : prev.filter((d) => d !== day)
+    const fetchData = async () => {
+        try {
+            const data = await getData(db)
+            return data
+        } catch (error) {
+            throw new Error(`Failed to fetch app data: ${error}`)
+        }
+    }
 
-            setProgram({
-                date: startOfToday().toISOString(),
-                workoutDays: newDays,
-            })
+    useEffect(() => {
+        const getUserData = async () => {
+            setLoading(true)
+            setError(false)
+            try {
+                const appData = await fetchData()
+                if (!appData) return
+                setTrainingProgram(
+                    appData?.programs[appData.programs.length - 1]
+                )
+            } catch (error) {
+                setError(true)
+                console.error('Error getting user data: ', error)
+            } finally {
+                setLoading(false)
+            }
+        }
 
-            return newDays
+        getUserData()
+    }, [])
+
+    const handleSaveSession = (session: Session) => {
+        setTrainingProgram((prev) => {
+            const existingIndex = prev.sessions.findIndex(
+                (s) => s.day === session.day
+            )
+
+            if (existingIndex >= 0) {
+                const updated = [...prev.sessions]
+                updated[existingIndex] = session
+                return { ...prev, sessions: updated }
+            }
+
+            return {
+                ...prev,
+                sessions: [...prev.sessions, session],
+            }
         })
     }
 
-    async function handleSave() {
-        if (workoutDays.length === 0) {
+    const handleSaveTrainingProgram = async () => {
+        if (trainingProgram.sessions.length === 0) {
             showAlert(
-                'Error',
+                'Invalid Training Program',
                 'You should choose at least 1 workout day!',
                 'error'
             )
             return
         }
 
-        if (!program) return
-
         try {
-            await addProgram(db, program)
-            showAlert('success', 'New program saved successfully', 'success')
+            await addProgram(db, trainingProgram)
         } catch (err) {
             console.error('there has been error while saving program', err)
             showAlert(
@@ -62,33 +106,90 @@ export default function ProgramScreen() {
             )
             return
         } finally {
-            router.replace('/')
+            router.replace('/home')
         }
     }
 
-    return (
-        <View style={styles.container}>
-            <Logo size={46} />
-            <View style={{ alignItems: 'center' }}>
-                <CustomText style={styles.header}>Program</CustomText>
-                <CustomText style={styles.text}>
-                    Which Days will you go to gym?
-                </CustomText>
+    if (loading) {
+        return <Loading />
+    }
 
-                <View style={styles.buttonContainer}>
-                    {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(
-                        (day) => (
+    if (error) {
+        return (
+            <View
+                style={{
+                    paddingHorizontal: 5,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <View>
+                    <CustomText
+                        style={{
+                            fontSize: 120,
+                            textAlign: 'center',
+                            textOverflow: 'visible',
+                            color: colors.fg,
+                        }}
+                    >
+                        ⚠︎
+                    </CustomText>
+                    <CustomText
+                        style={{
+                            fontSize: 24,
+                            textOverflow: 'visible',
+                            textAlign: 'center',
+                            color: colors.fg,
+                        }}
+                    >
+                        Opps! Something wen't wrong. Try again later.
+                    </CustomText>
+                </View>
+            </View>
+        )
+    }
+
+    return (
+        <View>
+            <View style={styles.container}>
+                <Logo size={46} />
+                <View style={{ alignItems: 'center' }}>
+                    <CustomText style={styles.header}>Program</CustomText>
+                    <CustomText style={styles.text}>
+                        Which Days will you go to gym?
+                    </CustomText>
+
+                    <View style={styles.buttonContainer}>
+                        {days.map((day) => (
                             <DayButton
                                 key={day}
                                 text={day}
-                                onToggle={handleDayToggle}
+                                active={trainingProgram.sessions.some(
+                                    (session) => session.day === day
+                                )}
+                                onPress={() => setActiveDay(day)}
                             />
-                        )
-                    )}
+                        ))}
+                    </View>
                 </View>
-            </View>
 
-            <CustomButton text="Save" onPress={handleSave} size={24} />
+                <CustomButton
+                    text="Save"
+                    onPress={handleSaveTrainingProgram}
+                    size={24}
+                />
+            </View>
+            {activeDay && (
+                <SessionModal
+                    visible
+                    day={activeDay}
+                    session={trainingProgram.sessions.find(
+                        (s) => s.day === activeDay
+                    )}
+                    onClose={() => setActiveDay(null)}
+                    onSave={handleSaveSession}
+                />
+            )}
         </View>
     )
 }

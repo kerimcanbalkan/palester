@@ -1,23 +1,19 @@
 import { Pressable, Text, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
-import { useState } from 'react'
 
 interface Props {
     text: string
-    onToggle: (day: string, active: boolean) => void
+    onPress: () => void
+    active: boolean
 }
 
-export default function DayButton({ text, onToggle }: Props) {
+export default function DayButton({ text, onPress, active }: Props) {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
 
-    const [active, setActive] = useState(false)
-
     function handlePress() {
-        const newState = !active
-        setActive(newState)
-        onToggle(text, newState)
+        onPress()
     }
 
     return (
