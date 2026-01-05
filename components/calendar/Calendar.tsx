@@ -30,18 +30,30 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import CustomText from '@/components/CustomText'
 import { Workout } from '@/api/api'
 import WorkoutModal from '../WorkoutModal'
+import { enUS, tr, sq } from 'date-fns/locale'
+import { useTranslation } from '@/localization/useTranslation'
+import i18n from '@/localization/i18n'
 
 interface calendarProps {
     data: AppData
 }
 
 export default function Calendar({ data }: calendarProps) {
+    const { t } = useTranslation()
+    const localeMapping = {
+        en: enUS,
+        tr: tr,
+        sq: sq,
+    }
+    const currentLocale =
+        localeMapping[i18n.locale as keyof typeof localeMapping] || enUS
+
     const today = startOfToday()
     const [month, setMonth] = useState(startOfMonth(today))
     const [days, setDays] = useState(
         eachDayOfInterval({
-            start: startOfWeek(startOfMonth(month)),
-            end: endOfWeek(endOfMonth(month)),
+            start: startOfWeek(startOfMonth(month), { locale: currentLocale }),
+            end: endOfWeek(endOfMonth(month), { locale: currentLocale }),
         })
     )
     const workouts = data.workouts
@@ -57,16 +69,16 @@ export default function Calendar({ data }: calendarProps) {
 
     useEffect(() => {
         const updatedDays = eachDayOfInterval({
-            start: startOfWeek(startOfMonth(month)),
-            end: endOfWeek(endOfMonth(month)),
+            start: startOfWeek(startOfMonth(month), { locale: currentLocale }),
+            end: endOfWeek(endOfMonth(month), { locale: currentLocale }),
         })
         setDays(updatedDays)
     }, [month])
 
     const weekDays = eachDayOfInterval({
-        start: startOfWeek(today),
-        end: endOfWeek(today),
-    }).map((day) => format(day, 'EEE'))
+        start: startOfWeek(today, { locale: currentLocale }),
+        end: endOfWeek(today, { locale: currentLocale }),
+    }).map((day) => format(day, 'EEE', { locale: currentLocale }))
 
     const colorscheme = useColorScheme()
     const colors = colorscheme === 'light' ? lightColors : darkColors
@@ -92,11 +104,11 @@ export default function Calendar({ data }: calendarProps) {
                     }}
                 >
                     <CustomText style={styles.text}>
-                        {format(month, 'MMMM')}
+                        {format(month, 'MMMM', { locale: currentLocale })}
                     </CustomText>
                     {!isSameYear(today, month) && (
                         <CustomText style={{ fontSize: 16, color: colors.fg }}>
-                            {format(month, 'yyyy')}
+                            {format(month, 'yyyy', { locale: currentLocale })}
                         </CustomText>
                     )}
                 </View>
@@ -213,7 +225,9 @@ export default function Calendar({ data }: calendarProps) {
                     >
                         {' '}
                     </CustomText>
-                    <CustomText style={{ color: colors.fg }}>Done</CustomText>
+                    <CustomText style={{ color: colors.fg }}>
+                        {t('workoutSummary.done')}
+                    </CustomText>
                 </View>
                 <View style={styles.legend}>
                     <CustomText
@@ -224,7 +238,9 @@ export default function Calendar({ data }: calendarProps) {
                     >
                         {' '}
                     </CustomText>
-                    <CustomText style={{ color: colors.fg }}>Rest</CustomText>
+                    <CustomText style={{ color: colors.fg }}>
+                        {t('workoutSummary.rest')}
+                    </CustomText>
                 </View>
                 <View style={styles.legend}>
                     <CustomText
@@ -235,7 +251,9 @@ export default function Calendar({ data }: calendarProps) {
                     >
                         {' '}
                     </CustomText>
-                    <CustomText style={{ color: colors.fg }}>Missed</CustomText>
+                    <CustomText style={{ color: colors.fg }}>
+                        {t('workoutSummary.missed')}
+                    </CustomText>
                 </View>
             </View>
             {activeWorkout && (

@@ -20,8 +20,10 @@ import { mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useTranslation } from '@/localization/useTranslation'
 
 export default function Import() {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -44,8 +46,8 @@ export default function Import() {
         } catch (err) {
             console.error(err)
             showAlert(
-                'File Picker Error',
-                'Something went wrong while picking backup file please try again later.',
+                t('setupImport.error.filePicker.title'),
+                t('setupImport.error.filePicker.message'),
                 'error'
             )
         }
@@ -57,8 +59,8 @@ export default function Import() {
 
             if (!importFile) {
                 showAlert(
-                    'Import File Error',
-                    'You should choose import file before trying to import data',
+                    t('setupImport.error.importFile.title'),
+                    t('setupImport.error.importFile.message'),
                     'error'
                 )
                 return
@@ -71,8 +73,8 @@ export default function Import() {
         } catch (err) {
             console.error(err)
             showAlert(
-                'File Picker Error',
-                'Something went wrong while importing backup file please try again later.',
+                t('setupImport.error.filePicker.title'),
+                t('setupImport.error.filePicker.message'),
                 'error'
             )
         } finally {
@@ -88,13 +90,15 @@ export default function Import() {
         <View style={styles.container}>
             <Logo size={46} />
             <View style={{ alignItems: 'center' }}>
-                <CustomText style={styles.header}>Import</CustomText>
+                <CustomText style={styles.header}>
+                    {t('setupImport.title')}
+                </CustomText>
                 <CustomText style={styles.text}>
-                    Do you have a backup data?
+                    {t('setupImport.question')}
                 </CustomText>
                 <View style={styles.pickerContainer}>
                     <CustomButton
-                        text="Pick File"
+                        text={t('setupImport.pickFile')}
                         size={12}
                         onPress={async () => {
                             await pickFile()
@@ -105,14 +109,14 @@ export default function Import() {
                     </CustomText>
                 </View>
                 <CustomButton
-                    text="Import"
+                    text={t('setupImport.import')}
                     size={20}
                     onPress={() => setImportModal(true)}
                 />
             </View>
             <CustomModal
                 visible={importModal}
-                dialog="Are you sure you want to import this backup file?"
+                dialog={t('setupImport.dialog')}
                 onConfirm={importBackup}
                 onClose={() => setImportModal(false)}
             />
@@ -120,7 +124,9 @@ export default function Import() {
                 onPress={() => router.replace('/setup/program')}
                 style={styles.skip}
             >
-                <CustomText style={styles.skipText}>Skip</CustomText>
+                <CustomText style={styles.skipText}>
+                    {t('common.skip') + ' >'}
+                </CustomText>
             </Pressable>
         </View>
     )
@@ -162,7 +168,7 @@ function themedStyles(colors: colorType) {
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: 24,
-            marginBottom: 12
+            marginBottom: 12,
         } as ViewStyle,
 
         fileName: {

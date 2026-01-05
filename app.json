@@ -1,68 +1,71 @@
 {
-    "expo": {
-        "name": "palester",
-        "slug": "palester",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icons/ios-dark.png",
-        "scheme": "palester",
-        "userInterfaceStyle": "automatic",
-        "newArchEnabled": true,
-        "ios": {
-            "bundleIdentifier": "com.palester",
-            "entitlements": {
-                "com.apple.security.application-groups": ["group.com.palester"]
-            },
-            "supportsTablet": true,
-            "icon": {
-                "dark": "./assets/icons/ios-dark.png",
-                "light": "./assets/icons/ios-light.png",
-                "tinted": "./assets/icons/ios-tinted.png"
-            }
-        },
-        "android": {
-            "adaptiveIcon": {
-                "backgroundColor": "#282828",
-                "foregroundImage": "./assets/icons/adaptive-icon.png",
-                "monochromeImage": "./assets/icons/adaptive-icon.png"
-            },
-            "edgeToEdgeEnabled": true,
-            "predictiveBackGestureEnabled": false,
-            "package": "com.balkan.palester"
-        },
-        "web": {
-            "output": "static",
-            "favicon": "./assets/icons/ios-dark.png"
-        },
-        "plugins": [
-            "expo-router",
-            [
-                "expo-splash-screen",
-                {
-                    "image": "./assets/icons/splash-icon-light.png",
-                    "imageWidth": 200,
-                    "resizeMode": "contain",
-                    "backgroundColor": "#fbf1c7",
-                    "dark": {
-                        "image": "./assets/icons/splash-icon-dark.png",
-                        "backgroundColor": "#282828"
-                    }
-                }
-            ],
-            "expo-font",
-            "expo-asset",
-            "expo-sqlite",
-            "expo-web-browser"
-        ],
-        "experiments": {
-            "typedRoutes": true,
-            "reactCompiler": true
-        },
-        "extra": {
-            "router": {},
-            "eas": {
-                "projectId": "54b59e60-3cad-4480-b1de-0aa440c0519a"
-            }
+  "expo": {
+    "name": "palester",
+    "slug": "palester",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/ios-dark.png",
+    "scheme": "palester",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.palester",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.palester"
+        ]
+      },
+      "supportsTablet": true,
+      "icon": {
+        "dark": "./assets/icons/ios-dark.png",
+        "light": "./assets/icons/ios-light.png",
+        "tinted": "./assets/icons/ios-tinted.png"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#282828",
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "monochromeImage": "./assets/icons/adaptive-icon.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.balkan.palester"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/icons/ios-dark.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icons/splash-icon-light.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#fbf1c7",
+          "dark": {
+            "image": "./assets/icons/splash-icon-dark.png",
+            "backgroundColor": "#282828"
+          }
         }
+      ],
+      "expo-font",
+      "expo-asset",
+      "expo-sqlite",
+      "expo-web-browser",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "54b59e60-3cad-4480-b1de-0aa440c0519a"
+      }
     }
+  }
 }

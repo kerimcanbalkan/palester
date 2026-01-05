@@ -1,0 +1,119 @@
+{
+    "common": {
+        "ok": "OK",
+        "cancel": "Anulo",
+        "save": "Ruaj",
+        "delete": "Fshi",
+        "skip": "Kaloj",
+        "update": "Përditëso",
+        "success": "Sukses",
+        "second": "s"
+    },
+    "error": {
+        "somethingWentWrong": "Ops! Diçka shkoi gabim."
+    },
+    "lift": {
+        "name": "Emri",
+        "sets": "Sete",
+        "reps": "Reps"
+    },
+    "workoutSummary": {
+        "title": "Përmbledhja e Programit",
+        "done": "Përfunduar",
+        "rest": "Pushim",
+        "missed": "Humbur",
+        "log": "Regjistro Stërvitjen",
+        "update": "Përditëso Stërvitjen"
+    },
+    "modal": {
+        "program": "Ndrysho Programin",
+        "importExport": "Importo / Exporto",
+        "language": "Gjuha"
+    },
+    "program": {
+        "title": "Programi",
+        "question": "Në cilët ditë do të shkoni në palestër?",
+        "error": {
+            "invalidTrainingProgram": {
+                "title": "Program i Pavlefshëm",
+                "message": "Duhet të zgjidhni të paktën 1 ditë stërvitjeje!"
+            },
+            "couldNotSave": {
+                "title": "Gabim",
+                "message": "Diçka shkoi gabim! Nuk mund të ruhet programi i ri."
+            }
+        }
+    },
+    "session": {
+        "error": {
+            "invalidSession": {
+                "title": "Sesioni i pavlefshëm!",
+                "message": "Rregulloni fushat e shënuara."
+            }
+        }
+    },
+    "setupImport": {
+        "title": "Importo",
+        "question": "A keni të dhëna rezervë?",
+        "pickFile": "Zgjidh Skedarin",
+        "import": "Importo",
+        "dialog": "A jeni i sigurt që dëshironi të importoni këtë skedar rezervë?",
+        "error": {
+            "filePicker": {
+                "title": "Gabim te Zgjedhësi i Skedarëve",
+                "message": "Diçka shkoi gabim gjatë zgjedhjes së skedarit rezervë. Ju lutem provoni më vonë."
+            },
+            "importFile": {
+                "title": "Gabim te Skedari i Importimit",
+                "message": "Duhet të zgjidhni një skedar përpara se të provoni të importoni të dhënat."
+            }
+        }
+    },
+    "importExport": {
+        "importTitle": "Importo të Dhënat",
+        "importButton": "Importo",
+        "pickFile": "Zgjidh Skedarin",
+        "exportTitle": "Eksporto të Dhënat",
+        "pickDirectory": "Zgjidh Dosjen",
+        "exportButton": "Eksporto",
+        "importDialog": "A jeni të sigurt që dëshironi të importoni të dhënat e aplikacionit?",
+        "exportDialog": "A jeni të sigurt që dëshironi të eksportoni të dhënat e aplikacionit?",
+        "importSuccessMessage": "Të dhënat u importuan me sukses!",
+        "exportSuccessMessage": "Të dhënat u eksportuan me sukses!",
+        "error": {
+            "filePicker": {
+                "title": "Gabim në Zgjedhjen e Skedarit",
+                "message": "Diçka shkoi keq gjatë zgjedhjes së skedarit të kopjes rezervë, ju lutemi provoni përsëri më vonë."
+            },
+            "importFile": {
+                "title": "Gabim në Skedarin e Importit",
+                "message": "Duhet të zgjidhni një skedar përpara se të importoni të dhënat."
+            },
+            "exportDirectory": {
+                "title": "Gabim në Dosjen e Eksportit",
+                "message": "Duhet të zgjidhni një dosje përpara se të eksportoni të dhënat."
+            },
+            "export": {
+                "title": "Gabim në Eksportim",
+                "message": "Diçka shkoi keq gjatë eksportimit të skedarit të kopjes rezervë, ju lutemi provoni përsëri më vonë."
+            }
+        }
+    },
+    "workoutLog": {
+        "modalQuestion": "A jeni i sigurt që dëshironi të ruani stërvitjen me këto peshë?",
+        "error": {
+            "invalidWorkout": {
+                "title": "Stërvitje e pavlefshme!",
+                "message": "Ju lutem vendosni peshë të vlefshme për çdo stërvitje!"
+            },
+            "couldNotSave": {
+                "title": "Gabim",
+                "message": "Diçka shkoi keq! Stërvitja nuk u ruajt, ju lutem provoni përsëri më vonë."
+            }
+        },
+        "successMessage": "Stërvitja u ruajt me sukses!"
+    },
+    "language": {
+        "title": "Zgjidh Gjuhe"
+    }
+}

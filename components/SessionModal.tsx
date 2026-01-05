@@ -14,9 +14,11 @@ import CustomPicker from '@/components/CustomPicker'
 import { Lift, Session } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
 import CustomText from './CustomText'
+import { useTranslation } from '@/localization/useTranslation'
 
 interface ModalProps {
     visible: boolean
+
     onClose: () => void
     day: string
     session?: Session
@@ -32,6 +34,7 @@ export default function SessionModal({
     onSave,
     onDelete,
 }: ModalProps) {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -114,7 +117,11 @@ export default function SessionModal({
 
         if (!isValid) {
             setVisualValidation(true)
-            showAlert('Invalid session', 'Fix highlighted fields', 'error')
+            showAlert(
+                t('session.error.invalidSession.title'),
+                t('session.error.invalidSession.message'),
+                'error'
+            )
             return
         }
 
@@ -193,32 +200,37 @@ export default function SessionModal({
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: initialSession ? 'space-between' : 'flex-end',
+                            justifyContent: initialSession
+                                ? 'space-between'
+                                : 'flex-end',
                             width: '80%',
                         }}
                     >
-                        {initialSession ?
+                        {initialSession ? (
                             <Pressable
                                 style={styles.deleteButton}
                                 onPress={handleDelete}
                             >
                                 <CustomText style={styles.buttonText}>
-                                    Delete
+                                    {t('common.delete')}
                                 </CustomText>
-                            </Pressable> : ''}
+                            </Pressable>
+                        ) : (
+                            ''
+                        )}
 
                         <Pressable
                             style={styles.saveButton}
                             onPress={handleSave}
                         >
                             <CustomText style={styles.buttonText}>
-                                Save
+                                {t('common.save')}
                             </CustomText>
                         </Pressable>
                     </View>
                 </Pressable>
             </Pressable>
-        </Modal >
+        </Modal>
     )
 }
 
@@ -229,6 +241,7 @@ interface LiftInputProps {
 }
 
 function LiftInput({ lift, onChange, validate }: LiftInputProps) {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -254,7 +267,7 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
             }}
         >
             <View style={{ gap: 1 }}>
-                <CustomText style={styles.label}>Name</CustomText>
+                <CustomText style={styles.label}>{t('lift.name')}</CustomText>
                 <TextInput
                     style={[styles.nameInput, nameInvalid && styles.inputError]}
                     value={lift.name}
@@ -263,7 +276,7 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
             </View>
 
             <View style={{ gap: 1 }}>
-                <CustomText style={styles.label}>Sets</CustomText>
+                <CustomText style={styles.label}>{t('lift.sets')}</CustomText>
                 <TextInput
                     selectTextOnFocus
                     style={[styles.input, setsInvalid && styles.inputError]}
@@ -282,7 +295,9 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
 
             <View style={{ gap: 1 }}>
                 <CustomText style={styles.label}>
-                    {lift.quantity.type === 'reps' ? 'Reps' : 'Seconds'}
+                    {lift.quantity.type === 'reps'
+                        ? t('lift.reps')
+                        : t('common.second')}
                 </CustomText>
                 <TextInput
                     selectTextOnFocus
@@ -316,8 +331,8 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
                 style={{ alignSelf: 'flex-end' }}
                 value={lift.quantity.type}
                 items={[
-                    { label: 'rep', value: 'reps' },
-                    { label: 's', value: 'time' },
+                    { label: t('lift.reps').toLowerCase(), value: 'reps' },
+                    { label: t('common.second').toLowerCase(), value: 'time' },
                 ]}
                 onChange={(type) =>
                     onChange({
