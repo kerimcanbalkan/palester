@@ -1,10 +1,10 @@
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import {
-    Pressable,
     useColorScheme,
     StyleSheet,
     ViewStyle,
     TextStyle,
+    TouchableOpacity,
 } from 'react-native'
 import CustomText from '@/components/CustomText'
 
@@ -19,9 +19,9 @@ export default function CustomButton({ text, onPress, size }: Props) {
     const styles = themedStyles(colors, size)
 
     return (
-        <Pressable onPress={onPress} style={styles.button}>
+        <TouchableOpacity onPress={onPress} style={styles.button}>
             <CustomText style={styles.buttonCustomText}>{text}</CustomText>
-        </Pressable>
+        </TouchableOpacity>
     )
 }
 
