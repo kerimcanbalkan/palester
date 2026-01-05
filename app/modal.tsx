@@ -2,8 +2,10 @@ import { View, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
 import { Link } from 'expo-router'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useTranslation } from '@/localization/useTranslation'
 
 export default function Modal() {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -16,10 +18,13 @@ export default function Modal() {
             <View style={styles.container}>
                 <View>
                     <Link href="/settings/program" style={styles.link}>
-                        Change Program
+                        {t('modal.program')}
                     </Link>
                     <Link href="/settings/import-export" style={styles.link}>
-                        Import/Export
+                        {t('modal.importExport')}
+                    </Link>
+                    <Link href="/settings/language" style={styles.link}>
+                        {t('modal.language')}
                     </Link>
                 </View>
             </View>

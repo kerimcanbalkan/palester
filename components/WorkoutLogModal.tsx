@@ -17,6 +17,7 @@ import CustomText from './CustomText'
 import { startOfToday } from 'date-fns'
 import CustomButton from './CustomButton'
 import CustomModal from './CustomModal'
+import { useTranslation } from '@/localization/useTranslation'
 
 interface ModalProps {
     visible: boolean
@@ -33,6 +34,7 @@ export default function WorkoutLogModal({
     session,
     workout: initialWorkout,
 }: ModalProps) {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -42,9 +44,9 @@ export default function WorkoutLogModal({
         initialWorkout
             ? initialWorkout
             : {
-                date: today,
-                lifts: session.lifts,
-            }
+                  date: today,
+                  lifts: session.lifts,
+              }
     )
     const [visualValidation, setVisualValidation] = useState(false)
     const [confirmModal, setConfirmModal] = useState(false)
@@ -73,8 +75,8 @@ export default function WorkoutLogModal({
         if (!isValid) {
             setVisualValidation(true)
             showAlert(
-                'Invalid workout',
-                'Please enter valid weights per workout!',
+                t('workoutLog.error.invalidWorkout.title'),
+                t('workoutLog.error.invalidWorkout.message'),
                 'error'
             )
             return
@@ -112,14 +114,18 @@ export default function WorkoutLogModal({
                         ))}
                     </ScrollView>
                     <CustomButton
-                        text={initialWorkout ? 'update' : 'save'}
+                        text={
+                            initialWorkout
+                                ? t('common.update')
+                                : t('common.save')
+                        }
                         size={18}
                         onPress={() => setConfirmModal(true)}
                     />
                 </Pressable>
             </Pressable>
             <CustomModal
-                dialog="Are you sure to save workout with this weights?"
+                dialog={t('workoutLog.modalQuestion')}
                 onConfirm={() => handleSave(workout)}
                 visible={confirmModal}
                 onClose={() => setConfirmModal(false)}
@@ -142,7 +148,9 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
     const weightInvalid = validate && lift?.weight.weight <= 0
-    const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>(lift.weight.unit ? lift.weight.unit : 'kg')
+    const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>(
+        lift.weight.unit ? lift.weight.unit : 'kg'
+    )
     const quantity =
         lift.quantity.type === 'reps'
             ? lift.quantity.reps.toString()
@@ -152,8 +160,7 @@ function LiftInput({ lift, onChange, validate }: LiftInputProps) {
         <View style={{ alignItems: 'center' }}>
             <View style={styles.liftContainer}>
                 <CustomText style={styles.lift}>{lift.name}</CustomText>
-                <CustomText style={styles.textStyle}
-                >
+                <CustomText style={styles.textStyle}>
                     {lift.sets}x{quantity}
                 </CustomText>
                 <View style={styles.inputContainer}>

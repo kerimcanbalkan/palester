@@ -6,18 +6,24 @@ import { useState } from 'react'
 import DayButton from '@/components/DayButton'
 import { useRouter } from 'expo-router'
 import { useAlert } from '@/context/AlertContext'
-import {
-    initData,
-    Session,
-    TrainingProgram,
-} from '@/api/api'
-import { startOfToday } from 'date-fns'
+import { initData, Session, TrainingProgram } from '@/api/api'
 import CustomText from '@/components/CustomText'
 import { useSQLiteContext } from 'expo-sqlite'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import SessionModal from '@/components/SessionModal'
+import { useTranslation } from '@/localization/useTranslation'
+import { enUS, tr, sq } from 'date-fns/locale'
+import {
+    startOfToday,
+    eachDayOfInterval,
+    format,
+    startOfWeek,
+    endOfWeek,
+} from 'date-fns'
+import i18n from '@/localization/i18n'
 
 export default function Program() {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -29,7 +35,24 @@ export default function Program() {
         date: startOfToday().toISOString(),
         sessions: [],
     })
-    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    const localeMapping = {
+        en: enUS,
+        tr: tr,
+        sq: sq,
+    }
+    const currentLocale =
+        localeMapping[i18n.locale as keyof typeof localeMapping] || enUS
+
+    const today = startOfToday()
+    const days = eachDayOfInterval({
+        start: startOfWeek(today, { locale: currentLocale }),
+        end: endOfWeek(today, { locale: currentLocale }),
+    }).map((day) => format(day, 'EEE').toLowerCase())
+
+    const daysLocale = eachDayOfInterval({
+        start: startOfWeek(today, { locale: currentLocale }),
+        end: endOfWeek(today, { locale: currentLocale }),
+    }).map((day) => format(day, 'EEE', { locale: currentLocale }))
 
     const [activeDay, setActiveDay] = useState<string | null>(null)
 
@@ -56,7 +79,9 @@ export default function Program() {
         setTrainingProgram((prev) => {
             return {
                 ...prev,
-                sessions: prev.sessions.filter((s: Session) => s.day !== session.day),
+                sessions: prev.sessions.filter(
+                    (s: Session) => s.day !== session.day
+                ),
             }
         })
     }
@@ -64,22 +89,26 @@ export default function Program() {
     const handleSaveTrainingProgram = async () => {
         if (trainingProgram.sessions.length === 0) {
             showAlert(
-                'Invalid Training Program',
-                'You should choose at least 1 workout day!',
+                t('program.error.invalidTrainingProgram.title'),
+                t('program.error.invalidTrainingProgram.message'),
                 'error'
             )
             return
         }
 
         try {
-            const appData = { id: Date.now(), programs: [trainingProgram], workouts: [] }
+            const appData = {
+                id: Date.now(),
+                programs: [trainingProgram],
+                workouts: [],
+            }
             await initData(db, appData)
             AsyncStorage.setItem('setup_done', 'true')
         } catch (err) {
             console.error('there has been error while saving program', err)
             showAlert(
-                'error',
-                'Something went wrong! Could not save new program',
+                t('program.error.couldNotSave.title'),
+                t('program.error.couldNotSave.message'),
                 'error'
             )
             return
@@ -93,16 +122,18 @@ export default function Program() {
             <View style={styles.container}>
                 <Logo size={46} />
                 <View style={{ alignItems: 'center' }}>
-                    <CustomText style={styles.header}>Program</CustomText>
+                    <CustomText style={styles.header}>
+                        {t('program.title')}
+                    </CustomText>
                     <CustomText style={styles.text}>
-                        Which Days will you go to gym?
+                        {t('program.question')}
                     </CustomText>
 
                     <View style={styles.buttonContainer}>
-                        {days.map((day) => (
+                        {days.map((day, i) => (
                             <DayButton
                                 key={day}
-                                text={day}
+                                text={daysLocale[i]}
                                 active={trainingProgram.sessions.some(
                                     (session) => session.day === day
                                 )}
@@ -113,7 +144,7 @@ export default function Program() {
                 </View>
 
                 <CustomButton
-                    text="Save"
+                    text={t('common.save')}
                     onPress={handleSaveTrainingProgram}
                     size={24}
                 />

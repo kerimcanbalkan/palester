@@ -1,7 +1,5 @@
 import CustomText from '@/components/CustomText'
-import {
-    useSQLiteContext,
-} from 'expo-sqlite'
+import { useSQLiteContext } from 'expo-sqlite'
 import {
     View,
     StyleSheet,
@@ -18,8 +16,10 @@ import { useAlert } from '@/context/AlertContext'
 import { getData, mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
+import { useTranslation } from '@/localization/useTranslation'
 
 export default function ImportExport() {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -45,8 +45,8 @@ export default function ImportExport() {
         } catch (err) {
             console.error(err)
             showAlert(
-                'File Picker Error',
-                'Something went wrong while picking backup file please try again later.',
+                t('importExport.error.filePicker.title'),
+                t('importExport.error.filePicker.message'),
                 'error'
             )
         }
@@ -58,8 +58,8 @@ export default function ImportExport() {
 
             if (!importFile) {
                 showAlert(
-                    'Import File Error',
-                    'You should choose import file before trying to import data',
+                    t('importExport.error.importFile.title'),
+                    t('importExport.error.importFile.message'),
                     'error'
                 )
                 return
@@ -67,12 +67,16 @@ export default function ImportExport() {
             const file = new File(importFile.uri)
             const backupData = JSON.parse(file.textSync())
             await mergeBackup(db, backupData)
-            showAlert('Success', 'Data imported Successfully!', 'success')
+            showAlert(
+                t('common.success'),
+                t('importExport.importSuccessMessage'),
+                'success'
+            )
         } catch (err) {
             console.error(err)
             showAlert(
-                'File Picker Error',
-                'Something went wrong while picking backup file please try again later.',
+                t('importExport.error.filePicker.title'),
+                t('importExport.error.filePicker.messsage'),
                 'error'
             )
         } finally {
@@ -89,8 +93,8 @@ export default function ImportExport() {
             console.log(jsonString)
             if (!exportDirectory) {
                 showAlert(
-                    'Export Directory Error',
-                    'You should choose export directory before exporting the data',
+                    t('importExport.error.exportDirectory.title'),
+                    t('importExport.error.exportDirectory.message'),
                     'error'
                 )
                 return
@@ -104,12 +108,16 @@ export default function ImportExport() {
             console.log('writing to backup file')
             file.write(jsonString)
             console.log('write done')
-            showAlert('Success', 'Data exported Successfully!', 'success')
+            showAlert(
+                t('common.success'),
+                t('importExport.exportSuccessMessage'),
+                'success'
+            )
         } catch (err) {
             console.error(err)
             showAlert(
-                'Export Error',
-                'Something went wrong while exporting backup file please try again later.',
+                t('importExport.error.export.title'),
+                t('importExport.error.export.message'),
                 'error'
             )
         } finally {
@@ -127,27 +135,26 @@ export default function ImportExport() {
         } catch (err) {
             console.error(err)
             showAlert(
-                'Export Error',
-                'Something went wrong while exporting backup file please try again later.',
+                t('importExport.error.export.title'),
+                t('importExport.error.export.message'),
                 'error'
             )
         }
     }
 
-
     if (loading) {
-        return (
-            <Loading />
-        )
+        return <Loading />
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.importContainer}>
-                <CustomText style={styles.header}>Import App Data</CustomText>
+                <CustomText style={styles.header}>
+                    {t('importExport.importTitle')}
+                </CustomText>
                 <View style={styles.pickerContainer}>
                     <CustomButton
-                        text="Pick File"
+                        text={t('importExport.pickFile')}
                         size={12}
                         onPress={async () => {
                             await pickFile()
@@ -158,16 +165,18 @@ export default function ImportExport() {
                     </CustomText>
                 </View>
                 <CustomButton
-                    text="Import"
+                    text={t('importExport.importButton')}
                     size={20}
                     onPress={() => setImportModal(true)}
                 />
             </View>
             <View style={styles.importContainer}>
-                <CustomText style={styles.header}>Export App Data</CustomText>
+                <CustomText style={styles.header}>
+                    {t('importExport.exportTitle')}
+                </CustomText>
                 <View style={styles.pickerContainer}>
                     <CustomButton
-                        text="Pick Directory"
+                        text={t('importExport.pickDirectory')}
                         size={12}
                         onPress={async () => {
                             await pickDirectory()
@@ -178,19 +187,19 @@ export default function ImportExport() {
                     </CustomText>
                 </View>
                 <CustomButton
-                    text="Export"
+                    text={t('importExport.exportButton')}
                     size={20}
                     onPress={() => setExportModal(true)}
                 />
             </View>
             <CustomModal
-                dialog="Are you sure you want to export app data?"
+                dialog={t('importExport.exportDialog')}
                 onConfirm={exportBackup}
                 visible={exportModal}
                 onClose={() => setExportModal(false)}
             />
             <CustomModal
-                dialog="Are you sure you want to import app data?"
+                dialog={t('importExport.importDialog')}
                 onConfirm={importBackup}
                 visible={importModal}
                 onClose={() => setImportModal(false)}

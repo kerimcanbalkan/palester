@@ -19,6 +19,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link } from 'expo-router'
 import CustomText from '@/components/CustomText'
 import WorkoutLogModal from '@/components/WorkoutLogModal'
+import { useTranslation } from '@/localization/useTranslation'
 
 export default function Home() {
     const colorScheme = useColorScheme()
@@ -39,6 +40,8 @@ export default function Home() {
         lifts: [],
     })
     const [workoutToday, setWorkoutToday] = useState<Workout | null>(null)
+
+    const { t } = useTranslation()
 
     const fetchData = async () => {
         try {
@@ -65,6 +68,10 @@ export default function Home() {
                 const session = appData.programs[
                     appData.programs.length - 1
                 ].sessions.find((s) => s.day === todayName)
+                console.log(
+                    'programs',
+                    appData.programs[appData.programs.length - 1].sessions
+                )
                 if (!session) {
                     setSessionToday({ day: todayName, lifts: [] })
                     return
@@ -72,14 +79,16 @@ export default function Home() {
                 setSessionToday(session)
 
                 // Check if logged workout exists
-                const workout = appData.workouts.find((w) => isSameDay(today, w.date))
+                const workout = appData.workouts.find((w) =>
+                    isSameDay(today, w.date)
+                )
                 if (!workout) return
                 setWorkoutToday(workout)
-
             } catch (error) {
                 setError(true)
                 console.error('Error getting user data: ', error)
             } finally {
+                console.log(sessionToday)
                 setLoading(false)
             }
         }
@@ -90,14 +99,18 @@ export default function Home() {
     async function handleWorkoutLog(workout: Workout) {
         try {
             await addWorkout(db, workout)
-            showAlert('Success', 'Workout Logged Successfully', 'success')
+            showAlert(
+                t('common.success'),
+                t('workoutLog.successMessage'),
+                'success'
+            )
             const data = await fetchData()
             setData(data)
         } catch (err) {
             console.error('error while adding workout', err)
             showAlert(
-                'error',
-                'Something went wrong! Could not add workout',
+                t('workoutLog.error.couldNotSave.title'),
+                t('workoutLog.error.couldNotSave.message'),
                 'error'
             )
         }
@@ -156,11 +169,17 @@ export default function Home() {
                         overflow: 'visible',
                     }}
                 >
-                    <CustomText style={styles.header}>Activity</CustomText>
+                    <CustomText style={styles.header}>
+                        {t('workoutSummary.title')}
+                    </CustomText>
                     {data !== null ? <Calendar data={data} /> : <Loading />}
                 </View>
                 <CustomButton
-                    text={workoutToday ? "Update Workout" : "Log Workout"}
+                    text={
+                        workoutToday
+                            ? t('workoutSummary.update')
+                            : t('workoutSummary.log')
+                    }
                     onPress={() => setLogOpen(true)}
                     size={24}
                 />
@@ -172,7 +191,6 @@ export default function Home() {
                     onSave={handleWorkoutLog}
                     session={sessionToday}
                     {...(workoutToday && { workout: workoutToday })}
-
                 />
             </View>
         </View>
@@ -193,6 +211,7 @@ function themedStyles(colors: colorType) {
             marginBottom: 20,
             fontSize: 36,
             fontFamily: 'OpenSans_700Bold',
+            textAlign: 'center',
         } as TextStyle,
 
         settings: {

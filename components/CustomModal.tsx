@@ -1,3 +1,4 @@
+import { useTranslation } from '@/localization/useTranslation'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import {
     Modal,
@@ -22,6 +23,7 @@ export default function CustomModal({
     visible,
     onClose,
 }: ModalProps) {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -41,7 +43,9 @@ export default function CustomModal({
                             style={[styles.button, styles.buttonCancel]}
                             onPress={onClose}
                         >
-                            <Text style={styles.textStyle}>Cancel</Text>
+                            <Text style={styles.textStyle}>
+                                {t('common.cancel')}
+                            </Text>
                         </Pressable>
                         <Pressable
                             style={[styles.button, styles.buttonConfirm]}
@@ -50,7 +54,9 @@ export default function CustomModal({
                                 onClose()
                             }}
                         >
-                            <Text style={styles.textStyle}>Confirm</Text>
+                            <Text style={styles.textStyle}>
+                                {t('common.ok')}
+                            </Text>
                         </Pressable>
                     </View>
                 </View>

@@ -1,5 +1,6 @@
 import CustomText from '@/components/CustomText'
 import Loading from '@/components/Loading'
+import { initI18n } from '@/localization/i18n'
 import { darkColors, lightColors } from '@/theme/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'expo-router'
@@ -27,6 +28,10 @@ export default function Index() {
                 setError(true)
             }
         }
+        const checkLanguage = async () => {
+            await initI18n()
+        }
+        checkLanguage()
         checkSetup()
     }, [])
 

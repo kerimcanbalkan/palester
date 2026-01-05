@@ -8,6 +8,7 @@ import {
     useColorScheme,
 } from 'react-native'
 import { AlertType } from '@/context/AlertContext'
+import { useTranslation } from '@/localization/useTranslation'
 
 interface ModalProps {
     title: string
@@ -24,6 +25,7 @@ export default function CustomModal({
     visible,
     onClose,
 }: ModalProps) {
+    const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
@@ -96,7 +98,7 @@ export default function CustomModal({
                                     { color: typeStyles.backgroundColor },
                                 ]}
                             >
-                                Ok
+                                {t('common.ok')}
                             </Text>
                         </Pressable>
                     </View>
@@ -112,7 +114,7 @@ function themedStyles(colors: colorType) {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: colors.modalBg
+            backgroundColor: colors.modalBg,
         },
         modal: {
             borderRadius: 10,

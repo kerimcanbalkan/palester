@@ -1,0 +1,119 @@
+{
+    "common": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "skip": "Skip",
+        "update": "Update",
+        "success": "Success",
+        "second": "s"
+    },
+    "error": {
+        "somethingWentWrong": "Oops! Something went wrong. Please try again"
+    },
+    "lift": {
+        "name": "Name",
+        "sets": "Sets",
+        "reps": "Reps"
+    },
+    "workoutSummary": {
+        "title": "Workout Summary",
+        "done": "Done",
+        "rest": "Rest",
+        "missed": "Missed",
+        "log": "Save Workout",
+        "update": "Update Workout"
+    },
+    "modal": {
+        "program": "Change Program",
+        "importExport": "Import / Export",
+        "language": "Language"
+    },
+    "program": {
+        "title": "Program",
+        "question": "Which days will you workout?",
+        "error": {
+            "invalidTrainingProgram": {
+                "title": "Invalid Training Program",
+                "message": "You should at least choose 1 workout day!"
+            },
+            "couldNotSave": {
+                "title": "Error",
+                "message": "Something went wrong! Could not save new program"
+            }
+        }
+    },
+    "session": {
+        "error": {
+            "invalidSession": {
+                "title": "Invalid session!",
+                "message": "Fix highlighted fields"
+            }
+        }
+    },
+    "setupImport": {
+        "title": "Import",
+        "question": "Do you have backup file?",
+        "pickFile": "Pick File",
+        "import": "Import",
+        "dialog": "Are you sure you want to import this backup file?",
+        "error": {
+            "filePicker": {
+                "title": "File Picker Error",
+                "message": "Something went wrong while picking backup file please try again later."
+            },
+            "importFile": {
+                "title": "Import File Error",
+                "message": "You should choose an import file before trying to import data."
+            }
+        }
+    },
+    "importExport": {
+        "importTitle": "Import App Data",
+        "importButton": "Import",
+        "pickFile": "Pick File",
+        "exportTitle": "Export App Data",
+        "pickDirectory": "Pick Directory",
+        "exportButton": "Export",
+        "importDialog": "Are you sure you want to import app data?",
+        "exportDialog": "Are you sure you want to export app data?",
+        "importSuccessMessage": "Data imported Successfully!",
+        "exportSuccessMessage": "Data exported Successfully!",
+        "error": {
+            "filePicker": {
+                "title": "File Picker Error",
+                "message": "Something went wrong while picking backup file please try again later."
+            },
+            "importFile": {
+                "title": "Import File Error",
+                "message": "You should choose import file before trying to import data"
+            },
+            "exportDirectory": {
+                "title": "Export Directory Error",
+                "message": "You should choose export directory before exporting the data"
+            },
+            "export": {
+                "title": "Expor Error",
+                "message": "Something went wrong while exporting backup file please try again later."
+            }
+        }
+    },
+    "workoutLog": {
+        "modalQuestion": "Are you sure you want to save workout with these weights?",
+        "error": {
+            "invalidWorkout": {
+                "title": "Invalid Workout!",
+                "message": "Please enter valid weight per workout!"
+            },
+            "couldNotSave": {
+                "title": "Error",
+                "message": "Something went wrong! Could not save workout please try again later"
+            }
+        },
+        "successMessage": "Workout saved successfully!"
+    },
+    "language": {
+        "title": "Select Language"
+    }
+}

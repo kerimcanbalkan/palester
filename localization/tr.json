@@ -1,0 +1,119 @@
+{
+    "common": {
+        "ok": "Tamam",
+        "cancel": "Iptal",
+        "save": "Kaydet",
+        "delete": "Sil",
+        "skip": "Atla",
+        "update": "Güncelle",
+        "success": "Başarılı",
+        "second": "sn"
+    },
+    "error": {
+        "somethingWentWrong": "Tüh! Bir şeyler yanlış gitti."
+    },
+    "lift": {
+        "name": "isim",
+        "sets": "set",
+        "reps": "tekrar"
+    },
+    "workoutSummary": {
+        "title": "Antrenman Özeti",
+        "done": "Tamamlandı",
+        "rest": "Dinlenme",
+        "missed": "Kaçtı",
+        "log": "Antrenman Kaydet",
+        "update": "Antrenmanı Güncelle"
+    },
+    "modal": {
+        "program": "Programı Değiştir",
+        "importExport": "İçe / Dışa Aktar",
+        "language": "Dil"
+    },
+    "program": {
+        "title": "Program",
+        "question": "Hangi günler spor salonuna gideceksiniz?",
+        "error": {
+            "invalidTrainingProgram": {
+                "title": "Geçersiz Antrenman Programı",
+                "message": "En az 1 antrenman günü seçmelisiniz!"
+            },
+            "couldNotSave": {
+                "title": "Hata",
+                "message": "Bir şeyler yanlış gitti! Yeni program kaydedilemedi."
+            }
+        }
+    },
+    "session": {
+        "error": {
+            "invalidSession": {
+                "title": "Geçersiz antrenman",
+                "message": "Vurgulanan alanları düzeltin."
+            }
+        }
+    },
+    "setupImport": {
+        "title": "İçe Aktarma",
+        "question": "Yedek dosyanız var mı?",
+        "pickFile": "Dosya Seç",
+        "import": "İçe Aktar",
+        "dialog": "Bu yedek dosyasını içe aktarmak istediğinizden emin misiniz?",
+        "error": {
+            "filePicker": {
+                "title": "Dosya Seçici Hatası",
+                "message": "Yedek dosyası seçilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+            },
+            "importFile": {
+                "title": "Dosya İçe Aktarma Hatası",
+                "message": "Verileri içe aktarmadan önce bir dosya seçmelisiniz."
+            }
+        }
+    },
+    "importExport": {
+        "importTitle": "Verileri İçe Aktar",
+        "importButton": "İçe Aktar",
+        "pickFile": "Dosya Seç",
+        "exportTitle": "Verileri Dışa Aktar",
+        "pickDirectory": "Klasör Seç",
+        "exportButton": "Dışa Aktar",
+        "importDialog": "Uygulama verilerini içe aktarmak istediğinizden emin misiniz?",
+        "exportDialog": "Uygulama verilerini dışa aktarmak istediğinizden emin misiniz?",
+        "importSuccessMessage": "Veriler başarıyla içe aktarıldı!",
+        "exportSuccessMessage": "Veriler başarıyla dışa aktarıldı!",
+        "error": {
+            "filePicker": {
+                "title": "Dosya Seçici Hatası",
+                "message": "Yedekleme dosyası seçilirken bir hata oluştu, lütfen daha sonra tekrar deneyin."
+            },
+            "importFile": {
+                "title": "İçe Aktarma Dosyası Hatası",
+                "message": "Verileri içe aktarmadan önce bir dosya seçmelisiniz."
+            },
+            "exportDirectory": {
+                "title": "Dışa Aktarma Klasörü Hatası",
+                "message": "Verileri dışa aktarmadan önce bir klasör seçmelisiniz."
+            },
+            "export": {
+                "title": "Dışa Aktarma Hatası",
+                "message": "Yedekleme dosyası dışa aktarılırken bir hata oluştu, lütfen daha sonra tekrar deneyin."
+            }
+        }
+    },
+    "workoutLog": {
+        "modalQuestion": "Antrenmanı bu ağırlıklarla kaydetmek istediğinizden emin misiniz?",
+        "error": {
+            "invalidWorkout": {
+                "title": "Geçersiz Antrenman!",
+                "message": "Lütfen her antrenman için geçerli ağırlık girin!"
+            },
+            "couldNotSave": {
+                "title": "Hata",
+                "message": "Bir şeyler ters gitti! Antrenman kaydedilemedi, lütfen daha sonra tekrar deneyin."
+            }
+        },
+        "successMessage": "Antrenman başarıyla kaydedildi!"
+    },
+    "language": {
+        "title": "Dil Seç"
+    }
+}
