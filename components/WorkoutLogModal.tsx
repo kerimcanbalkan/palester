@@ -44,9 +44,9 @@ export default function WorkoutLogModal({
         initialWorkout
             ? initialWorkout
             : {
-                  date: today,
-                  lifts: session.lifts,
-              }
+                date: today,
+                lifts: session.lifts,
+            }
     )
     const [visualValidation, setVisualValidation] = useState(false)
     const [confirmModal, setConfirmModal] = useState(false)
@@ -69,7 +69,7 @@ export default function WorkoutLogModal({
 
     const handleSave = (workout: Workout) => {
         const isValid = workout.lifts.every(
-            (lift) => lift.weight && lift.weight.weight > 0
+            (lift) => lift.weight && lift.weight.weight >= 0
         )
 
         if (!isValid) {
