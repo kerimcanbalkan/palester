@@ -6,7 +6,7 @@ import {
     StyleSheet,
     useColorScheme,
     TextInput,
-    ScrollView,
+    FlatList,
 } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useState } from 'react'
@@ -87,32 +87,31 @@ export default function WorkoutLogModal({
 
     return (
         <Modal transparent visible={visible} animationType="slide">
-            <Pressable style={styles.overlay} onPress={handleClose}>
-                <Pressable
+            <View style={styles.overlay}>
+                <View
                     style={styles.sheet}
-                    onPress={(e) => e.stopPropagation()}
                 >
                     <Pressable onPress={handleClose} style={styles.close}>
                         <Ionicons name="close" size={32} color={colors.fg} />
                     </Pressable>
-                    <ScrollView
-                        style={{ maxHeight: scrollHeight }}
+                    <FlatList
+                        data={workout.lifts}
+                        style={{ maxHeight: scrollHeight, marginVertical: 10 }}
+                        keyExtractor={(item) => item.id.toString()}
                         keyboardShouldPersistTaps="handled"
                         onContentSizeChange={(_, h) => {
                             setContentHeight(h)
                         }}
-                    >
-                        {workout.lifts.map((l, key) => (
+                        renderItem={({ item }) => (
                             <LiftInput
-                                lift={l}
+                                lift={item}
                                 validate={visualValidation}
                                 onChange={(updated) =>
-                                    updateWorkout(l.id, updated)
+                                    updateWorkout(item.id, updated)
                                 }
-                                key={key}
                             />
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                     <CustomButton
                         text={
                             initialWorkout
@@ -122,8 +121,8 @@ export default function WorkoutLogModal({
                         size={18}
                         onPress={() => setConfirmModal(true)}
                     />
-                </Pressable>
-            </Pressable>
+                </View>
+            </View>
             <CustomModal
                 dialog={t('workoutLog.modalQuestion')}
                 onConfirm={() => handleSave(workout)}

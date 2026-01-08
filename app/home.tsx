@@ -180,7 +180,11 @@ export default function Home() {
                             ? t('workoutSummary.update')
                             : t('workoutSummary.log')
                     }
-                    onPress={() => setLogOpen(true)}
+                    onPress={() => {
+                        if (sessionToday.lifts.length !== 0) {
+                            setLogOpen(true)
+                        }
+                    }}
                     size={24}
                 />
                 <WorkoutLogModal

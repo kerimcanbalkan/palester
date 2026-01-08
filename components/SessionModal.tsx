@@ -6,7 +6,7 @@ import {
     StyleSheet,
     useColorScheme,
     TextInput,
-    ScrollView,
+    FlatList,
 } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useRef, useState } from 'react'
@@ -56,7 +56,7 @@ export default function SessionModal({
     )
     const nextId = useRef(Math.max(0, ...session.lifts.map((l) => l.id)) + 1)
 
-    const scrollRef = useRef<ScrollView>(null)
+    const scrollRef = useRef<FlatList>(null)
     const [contentHeight, setContentHeight] = useState(0)
     const MAX_SCROLL_HEIGHT = 300
     const scrollHeight = Math.min(contentHeight, MAX_SCROLL_HEIGHT)
@@ -136,33 +136,30 @@ export default function SessionModal({
 
     return (
         <Modal transparent visible={visible} animationType="slide">
-            <Pressable style={styles.overlay} onPress={handleClose}>
-                <Pressable
-                    style={styles.sheet}
-                    onPress={(e) => e.stopPropagation()}
-                >
+            <View style={styles.overlay}>
+                <View style={styles.sheet}>
                     <Pressable
                         onPress={handleClose}
                         style={{ alignSelf: 'flex-end' }}
                     >
                         <Ionicons name="close" size={32} color={colors.fg} />
                     </Pressable>
-
-                    <View style={{ height: scrollHeight }}>
-                        <ScrollView
-                            ref={scrollRef}
-                            showsVerticalScrollIndicator={false}
+                    <View style={{ height: scrollHeight, marginVertical: 10 }}>
+                        <FlatList
+                            data={session.lifts}
+                            style={{ maxHeight: scrollHeight }}
+                            keyExtractor={(item) => item.id.toString()}
                             keyboardShouldPersistTaps="handled"
+                            ref={scrollRef}
                             onContentSizeChange={(_, h) => {
                                 setContentHeight(h)
                                 scrollRef.current?.scrollToEnd({
                                     animated: true,
                                 })
                             }}
-                        >
-                            {session.lifts.map((lift) => (
+                            renderItem={({ item }) => (
                                 <View
-                                    key={lift.id}
+                                    key={item.id}
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -171,14 +168,14 @@ export default function SessionModal({
                                 >
                                     <LiftInput
                                         validate={visualValidation}
-                                        lift={lift}
+                                        lift={item}
                                         onChange={(updated) =>
-                                            updateLift(lift.id, updated)
+                                            updateLift(item.id, updated)
                                         }
                                     />
 
                                     <Pressable
-                                        onPress={() => removeLift(lift.id)}
+                                        onPress={() => removeLift(item.id)}
                                     >
                                         <Ionicons
                                             name="remove-circle-outline"
@@ -188,10 +185,9 @@ export default function SessionModal({
                                         />
                                     </Pressable>
                                 </View>
-                            ))}
-                        </ScrollView>
+                            )}
+                        />
                     </View>
-
                     <Pressable style={styles.button} onPress={addLift}>
                         <Ionicons name="add" size={24} color={colors.bg} />
                     </Pressable>
@@ -228,8 +224,8 @@ export default function SessionModal({
                             </CustomText>
                         </Pressable>
                     </View>
-                </Pressable>
-            </Pressable>
+                </View>
+            </View>
         </Modal>
     )
 }
