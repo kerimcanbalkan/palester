@@ -76,7 +76,7 @@
         "exportTitle": "Eksporto të Dhënat",
         "pickDirectory": "Zgjidh Dosjen",
         "exportButton": "Eksporto",
-        "importDialog": "A jeni të sigurt që dëshironi të importoni të dhënat e aplikacionit?",
+        "importDialog": "A jeni të sigurt që dëshironi të importoni të dhënat e aplikacionit? Të gjitha të dhënat ekzistuese do të zëvendësohen me të dhënat e kopjes rezervë.",
         "exportDialog": "A jeni të sigurt që dëshironi të eksportoni të dhënat e aplikacionit?",
         "importSuccessMessage": "Të dhënat u importuan me sukses!",
         "exportSuccessMessage": "Të dhënat u eksportuan me sukses!",

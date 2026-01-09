@@ -76,7 +76,7 @@
         "exportTitle": "Export App Data",
         "pickDirectory": "Pick Directory",
         "exportButton": "Export",
-        "importDialog": "Are you sure you want to import app data?",
+        "importDialog": "Are you sure you want to import app data? All existing data will be replaced by backup data.",
         "exportDialog": "Are you sure you want to export app data?",
         "importSuccessMessage": "Data imported Successfully!",
         "exportSuccessMessage": "Data exported Successfully!",

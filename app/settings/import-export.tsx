@@ -10,19 +10,21 @@ import {
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
 import * as DocumentPicker from 'expo-document-picker'
-import { Directory, File, Paths } from 'expo-file-system/next'
+import { Directory, File } from 'expo-file-system/next'
 import { useState } from 'react'
 import { useAlert } from '@/context/AlertContext'
 import { getData, mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
 import { useTranslation } from '@/localization/useTranslation'
+import { useRouter } from 'expo-router'
 
 export default function ImportExport() {
     const { t } = useTranslation()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
+
     const [importFile, setImportFile] =
         useState<DocumentPicker.DocumentPickerAsset | null>(null)
     const [exportDirectory, setExportDirectory] = useState<Directory | null>(
@@ -30,7 +32,9 @@ export default function ImportExport() {
     )
     const [exportModal, setExportModal] = useState(false)
     const [importModal, setImportModal] = useState(false)
+
     const { showAlert } = useAlert()
+    const router = useRouter()
     const [loading, setLoading] = useState(false)
     const db = useSQLiteContext()
 
@@ -72,6 +76,7 @@ export default function ImportExport() {
                 t('importExport.importSuccessMessage'),
                 'success'
             )
+            router.replace('/home')
         } catch (err) {
             console.error(err)
             showAlert(

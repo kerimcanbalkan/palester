@@ -12,7 +12,7 @@ export type LiftQuantity =
 
 export type Weight = {
     weight: number
-    unit: "kg" | "lbs"
+    unit: 'kg' | 'lbs'
 }
 
 export type Lift = {
@@ -104,21 +104,14 @@ export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
         return
     }
 
-    const existingPrograms = existing.programs ?? []
     const incomingPrograms = backup.programs ?? []
-
-    const mergedPrograms = [...incomingPrograms, ...existingPrograms]
-
-    const existingWorkouts = existing.workouts ?? []
     const incomingWorkouts = backup.workouts ?? []
-
-    const mergedWorkouts = [...incomingWorkouts, ...existingWorkouts]
 
     await db.runAsync(
         `UPDATE app_data 
          SET programs = ?, workouts = ?
          WHERE id = 1`,
-        JSON.stringify(mergedPrograms),
-        JSON.stringify(mergedWorkouts)
+        JSON.stringify(incomingPrograms),
+        JSON.stringify(incomingWorkouts)
     )
 }

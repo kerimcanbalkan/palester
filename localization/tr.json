@@ -76,7 +76,7 @@
         "exportTitle": "Verileri Dışa Aktar",
         "pickDirectory": "Klasör Seç",
         "exportButton": "Dışa Aktar",
-        "importDialog": "Uygulama verilerini içe aktarmak istediğinizden emin misiniz?",
+        "importDialog": "Uygulama verilerini içe aktarmak istediğinizden emin misiniz? Mevcut tüm veriler, yedek verilerle değiştirilecektir.",
         "exportDialog": "Uygulama verilerini dışa aktarmak istediğinizden emin misiniz?",
         "importSuccessMessage": "Veriler başarıyla içe aktarıldı!",
         "exportSuccessMessage": "Veriler başarıyla dışa aktarıldı!",
