@@ -4,9 +4,10 @@ Inspired by GitHub activities I made an app to track my fitness progress using R
 
 ### Screenshots
 
-![(./assets/screenshots/home.png)]
-![(./assets/screenshots/workoutLog.png)]
-![(./assets/screenshots/logWorkout.png)]
-![(./assets/screenshots/sessionModal.png)]
-![(./assets/screenshots/importExport.png)]
-![(./assets/screenshots/language.png)]
+
+|---------------|-------------------|
+| ![](assets/screenshots/home.png) | ![](assets/screenshots/workoutLog.png) |
+|---------------|-------------------|
+| ![](assets/screenshots/logWorkout.png) | ![](assets/screenshots/sessionModal.png) |
+|---------------|-------------------|
+| ![](assets/screenshots/importExport.png) | ![](assets/screenshots/language.png) |
