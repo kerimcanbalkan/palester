@@ -14,7 +14,7 @@ import CustomPicker from '@/components/CustomPicker'
 import { Lift, Session, Workout } from '@/api/api'
 import { useAlert } from '@/context/AlertContext'
 import CustomText from './CustomText'
-import { startOfToday } from 'date-fns'
+import { startOfToday, format } from 'date-fns'
 import CustomButton from './CustomButton'
 import CustomModal from './CustomModal'
 import { useTranslation } from '@/localization/useTranslation'
@@ -44,7 +44,7 @@ export default function WorkoutLogModal({
         initialWorkout
             ? initialWorkout
             : {
-                date: today,
+                date: format(today, 'yyyy-MM-dd'),
                 lifts: session.lifts,
             }
     )

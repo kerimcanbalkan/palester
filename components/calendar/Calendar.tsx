@@ -21,6 +21,7 @@ import {
     isBefore,
     isSameDay,
     isSameMonth,
+    parse,
     parseISO,
 } from 'date-fns'
 import Box from './Box'
@@ -135,12 +136,13 @@ export default function Calendar({ data }: calendarProps) {
                     {days.map((day, i) => {
                         // Determine variant for current month days
                         const program = data.programs
-                            .sort(
-                                (a, b) =>
-                                    parseISO(a.date).getTime() -
-                                    parseISO(b.date).getTime()
+                            .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime())
+                            .findLast((p) =>
+                                isAfter(
+                                    day,
+                                    parseISO(p.date)
+                                )
                             )
-                            .findLast((p) => !isBefore(day, parseISO(p.date)))
                         let variant:
                             | 'today'
                             | 'future'
@@ -164,7 +166,10 @@ export default function Calendar({ data }: calendarProps) {
                                 (s: Session) => s.day === dayName
                             )
                             const isWorkoutDone = data?.workouts.some((w) =>
-                                isSameDay(day, parseISO(w.date))
+                                isSameDay(
+                                    day,
+                                    parse(w.date, 'yyyy-MM-dd', new Date())
+                                )
                             )
 
                             if (isWorkoutDone) {
@@ -183,12 +188,18 @@ export default function Calendar({ data }: calendarProps) {
 
                             data?.workouts.forEach((w) => {
                                 if (
-                                    isSameDay(day, parseISO(w.date)) &&
+                                    isSameDay(
+                                        day,
+                                        parse(w.date, 'yyyy-MM-dd', new Date())
+                                    ) &&
                                     isSameMonth(day, month)
                                 ) {
                                     variant = 'completed'
                                 } else if (
-                                    isSameDay(day, parseISO(w.date)) &&
+                                    isSameDay(
+                                        day,
+                                        parse(w.date, 'yyyy-MM-dd', new Date())
+                                    ) &&
                                     !isSameMonth(day, month)
                                 ) {
                                     variant = 'oldCompleted'
@@ -199,7 +210,14 @@ export default function Calendar({ data }: calendarProps) {
                         if (isAfter(day, today) && isSameMonth(day, month)) {
                             variant = 'future'
                         } else if (
-                            isBefore(day, parseISO(program?.date || ''))
+                            isBefore(
+                                day,
+                                parse(
+                                    program?.date || '',
+                                    'yyyy-MM-dd',
+                                    new Date()
+                                )
+                            )
                         ) {
                             variant = 'regular'
                         }
