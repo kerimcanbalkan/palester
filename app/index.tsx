@@ -49,7 +49,6 @@ export default function Index() {
                         style={{
                             fontSize: 120,
                             textAlign: 'center',
-                            textOverflow: 'visible',
                             color: colors.fg,
                         }}
                     >
@@ -58,12 +57,11 @@ export default function Index() {
                     <CustomText
                         style={{
                             fontSize: 24,
-                            textOverflow: 'visible',
                             textAlign: 'center',
                             color: colors.fg,
                         }}
                     >
-                        Opps! Something wen't wrong. Try again later.
+                        Opps! Something wen&apos;t wrong. Try again later.
                     </CustomText>
                 </View>
             </View>
