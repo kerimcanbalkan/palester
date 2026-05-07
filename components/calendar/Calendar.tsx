@@ -6,34 +6,14 @@ import {
     useColorScheme,
     TextStyle,
 } from 'react-native'
-import {
-    startOfToday,
-    add,
-    isToday,
-    isAfter,
-    isSameYear,
-    format,
-    eachDayOfInterval,
-    startOfMonth,
-    endOfMonth,
-    startOfWeek,
-    endOfWeek,
-    isBefore,
-    isSameDay,
-    isSameMonth,
-    parse,
-    parseISO,
-} from 'date-fns'
+import { add, isSameYear, format } from 'date-fns'
 import Box from './Box'
-import { useState, useEffect } from 'react'
-import { AppData, Session } from '@/api/api'
+import { AppData } from '@/api/api'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import CustomText from '@/components/CustomText'
-import { Workout } from '@/api/api'
 import WorkoutModal from '../WorkoutModal'
-import { enUS, tr, sq } from 'date-fns/locale'
 import { useTranslation } from '@/localization/useTranslation'
-import i18n from '@/localization/i18n'
+import { useCalendar } from './use-calendar'
 
 interface calendarProps {
     data: AppData
@@ -41,45 +21,20 @@ interface calendarProps {
 
 export default function Calendar({ data }: calendarProps) {
     const { t } = useTranslation()
-    const localeMapping = {
-        en: enUS,
-        tr: tr,
-        sq: sq,
-    }
-    const currentLocale =
-        localeMapping[i18n.locale as keyof typeof localeMapping] || enUS
-
-    const today = startOfToday()
-    const [month, setMonth] = useState(startOfMonth(today))
-    const [days, setDays] = useState(
-        eachDayOfInterval({
-            start: startOfWeek(startOfMonth(month), { locale: currentLocale }),
-            end: endOfWeek(endOfMonth(month), { locale: currentLocale }),
-        })
-    )
-    const workouts = data.workouts
-    const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null)
-    const [workoutModal, setWorkoutModal] = useState(false)
-
-    const handleBoxPress = (date: Date) => {
-        const workout = workouts.find((w) => isSameDay(w.date, date))
-        if (!workout) return
-        setActiveWorkout(workout)
-        setWorkoutModal(true)
-    }
-
-    useEffect(() => {
-        const updatedDays = eachDayOfInterval({
-            start: startOfWeek(startOfMonth(month), { locale: currentLocale }),
-            end: endOfWeek(endOfMonth(month), { locale: currentLocale }),
-        })
-        setDays(updatedDays)
-    }, [month])
-
-    const weekDays = eachDayOfInterval({
-        start: startOfWeek(today, { locale: currentLocale }),
-        end: endOfWeek(today, { locale: currentLocale }),
-    }).map((day) => format(day, 'EEE', { locale: currentLocale }))
+    const {
+        getBoxVariant,
+        month,
+        setMonth,
+        currentLocale,
+        today,
+        days,
+        handleBoxPress,
+        weekDays,
+        activeWorkout,
+        setWorkoutModal,
+        workoutModal,
+        setActiveWorkout,
+    } = useCalendar({ data })
 
     const colorscheme = useColorScheme()
     const colors = colorscheme === 'light' ? lightColors : darkColors
@@ -135,93 +90,7 @@ export default function Calendar({ data }: calendarProps) {
                 <View style={styles.datesContainer}>
                     {days.map((day, i) => {
                         // Determine variant for current month days
-                        const program = data.programs
-                            .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime())
-                            .findLast((p) =>
-                                isAfter(
-                                    day,
-                                    parseISO(p.date)
-                                )
-                            )
-                        let variant:
-                            | 'today'
-                            | 'future'
-                            | 'completed'
-                            | 'rest'
-                            | 'regular'
-                            | 'oldCompleted'
-                            | 'oldRest'
-                            | 'oldMissed'
-                            | 'missed' = 'regular'
-
-                        if (
-                            (isBefore(day, today) && program !== undefined) ||
-                            isToday(day)
-                        ) {
-                            const dayName = format(
-                                day,
-                                'EEE'
-                            ).toLocaleLowerCase()
-                            const isWorkoutDay = program?.sessions.some(
-                                (s: Session) => s.day === dayName
-                            )
-                            const isWorkoutDone = data?.workouts.some((w) =>
-                                isSameDay(
-                                    day,
-                                    parse(w.date, 'yyyy-MM-dd', new Date())
-                                )
-                            )
-
-                            if (isWorkoutDone) {
-                                variant = isSameMonth(day, month)
-                                    ? 'completed'
-                                    : 'oldCompleted'
-                            } else if (isWorkoutDay) {
-                                variant = isSameMonth(day, month)
-                                    ? 'missed'
-                                    : 'oldMissed'
-                            } else {
-                                variant = isSameMonth(day, month)
-                                    ? 'rest'
-                                    : 'oldRest'
-                            }
-
-                            data?.workouts.forEach((w) => {
-                                if (
-                                    isSameDay(
-                                        day,
-                                        parse(w.date, 'yyyy-MM-dd', new Date())
-                                    ) &&
-                                    isSameMonth(day, month)
-                                ) {
-                                    variant = 'completed'
-                                } else if (
-                                    isSameDay(
-                                        day,
-                                        parse(w.date, 'yyyy-MM-dd', new Date())
-                                    ) &&
-                                    !isSameMonth(day, month)
-                                ) {
-                                    variant = 'oldCompleted'
-                                }
-                            })
-                        }
-
-                        if (isAfter(day, today) && isSameMonth(day, month)) {
-                            variant = 'future'
-                        } else if (
-                            isBefore(
-                                day,
-                                parse(
-                                    program?.date || '',
-                                    'yyyy-MM-dd',
-                                    new Date()
-                                )
-                            )
-                        ) {
-                            variant = 'regular'
-                        }
-
+                        const variant = getBoxVariant(day)
                         return (
                             <Box
                                 key={i}

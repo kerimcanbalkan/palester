@@ -129,7 +129,11 @@ export default function Program() {
         }
 
         try {
-            await addProgram(db, trainingProgram)
+            const programToSave = {
+                ...trainingProgram,
+                date: startOfToday().toISOString(),
+            }
+            await addProgram(db, programToSave)
         } catch (err) {
             console.error('there has been error while saving program', err)
             showAlert(

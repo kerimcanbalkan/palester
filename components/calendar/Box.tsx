@@ -2,19 +2,22 @@ import { colorType, darkColors, lightColors } from '@/theme/colors'
 import { format, isToday } from 'date-fns'
 import { Pressable, StyleSheet, Text, useColorScheme } from 'react-native'
 
+export enum Variant {
+    regular = 1,
+    today,
+    future,
+    completed,
+    rest,
+    missed,
+    oldCompleted,
+    oldRest,
+    oldMissed,
+}
+
 interface Props {
     date: Date
     onPress: (date: Date) => void
-    variant:
-        | 'completed'
-        | 'rest'
-        | 'missed'
-        | 'today'
-        | 'future'
-        | 'regular'
-        | 'oldCompleted'
-        | 'oldMissed'
-        | 'oldRest'
+    variant: Variant
 }
 
 export default function Box({ date, variant, onPress }: Props) {
@@ -26,30 +29,30 @@ export default function Box({ date, variant, onPress }: Props) {
         <Pressable
             style={[
                 styles.container,
-                variant === 'completed' && styles.completed,
-                variant === 'rest' && styles.rest,
-                variant === 'missed' && styles.missed,
-                variant === 'future' && styles.future,
-                variant === 'regular' && styles.regular,
-                variant === 'oldCompleted' && styles.regular,
-                variant === 'oldMissed' && styles.regular,
-                variant === 'oldRest' && styles.regular,
+                variant === Variant.completed && styles.completed,
+                variant === Variant.rest && styles.rest,
+                variant === Variant.missed && styles.missed,
+                variant === Variant.future && styles.future,
+                variant === Variant.regular && styles.regular,
+                variant === Variant.oldCompleted && styles.regular,
+                variant === Variant.oldMissed && styles.regular,
+                variant === Variant.oldRest && styles.regular,
                 today ? styles.today : '',
             ]}
             onPress={() => onPress(date)}
         >
             <Text
                 style={[
-                    variant === 'today' && styles.textFg,
-                    variant === 'completed' && styles.textBg,
-                    variant === 'rest' && styles.textBg,
-                    variant === 'missed' && styles.textBg,
-                    variant === 'future' && styles.textFg,
-                    variant === 'regular' && styles.textFg,
+                    variant === Variant.today && styles.textFg,
+                    variant === Variant.completed && styles.textBg,
+                    variant === Variant.rest && styles.textBg,
+                    variant === Variant.missed && styles.textBg,
+                    variant === Variant.future && styles.textFg,
+                    variant === Variant.regular && styles.textFg,
 
-                    variant === 'oldCompleted' && styles.textGreen,
-                    variant === 'oldRest' && styles.textDarkGreen,
-                    variant === 'oldMissed' && styles.textRed,
+                    variant === Variant.oldCompleted && styles.textGreen,
+                    variant === Variant.oldRest && styles.textDarkGreen,
+                    variant === Variant.oldMissed && styles.textRed,
                 ]}
             >
                 {format(date, 'd')}

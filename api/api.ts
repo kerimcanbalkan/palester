@@ -1,3 +1,4 @@
+import { startOfToday } from 'date-fns'
 import { SQLiteDatabase } from 'expo-sqlite'
 
 export type AppDataSQL = {
@@ -87,9 +88,15 @@ export async function addWorkout(db: SQLiteDatabase, workout: Workout) {
 }
 export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
     const data = await getData(db)
-    const programs: TrainingProgram[] = data ? data.programs : []
+    const programs: TrainingProgram[] = data ? [...data.programs] : []
 
-    programs.push(program)
+    const newProgram = {
+        ...program,
+        date: startOfToday().toISOString(),
+    }
+
+    programs.push(newProgram)
+
     await db.runAsync(
         'UPDATE app_data SET programs = ? WHERE id = 1',
         JSON.stringify(programs)
@@ -108,7 +115,7 @@ export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
     const incomingWorkouts = backup.workouts ?? []
 
     await db.runAsync(
-        `UPDATE app_data 
+        `UPDATE app_data
          SET programs = ?, workouts = ?
          WHERE id = 1`,
         JSON.stringify(incomingPrograms),
