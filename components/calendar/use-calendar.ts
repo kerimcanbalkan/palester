@@ -94,7 +94,7 @@ export function useCalendar({ data }: UseCalendarProps) {
             return Variant.future
         }
 
-        if (isAfter(day, program?.date)) {
+        if (isAfter(day, program?.date) || isSameDay(day, program?.date)) {
             // If workout is done.
             if (isWorkoutDone) {
                 return isSameMonth(day, month)
