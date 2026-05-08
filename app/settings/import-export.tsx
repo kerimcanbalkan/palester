@@ -9,15 +9,14 @@ import {
 } from 'react-native'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
-import * as DocumentPicker from 'expo-document-picker'
-import { Directory, File } from 'expo-file-system/next'
 import { useState } from 'react'
 import { useAlert } from '@/context/AlertContext'
-import { getData, mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
 import { useTranslation } from '@/localization/useTranslation'
 import { useRouter } from 'expo-router'
+import { useImport } from '@/lib/hooks/use-import'
+import { useExport } from '@/lib/hooks/use-export'
 
 export default function ImportExport() {
     const { t } = useTranslation()
@@ -25,129 +24,34 @@ export default function ImportExport() {
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
 
-    const [importFile, setImportFile] =
-        useState<DocumentPicker.DocumentPickerAsset | null>(null)
-    const [exportDirectory, setExportDirectory] = useState<Directory | null>(
-        null
-    )
     const [exportModal, setExportModal] = useState(false)
     const [importModal, setImportModal] = useState(false)
-
     const { showAlert } = useAlert()
     const router = useRouter()
-    const [loading, setLoading] = useState(false)
     const db = useSQLiteContext()
+    const {
+        loading: importLoading,
+        pickFile,
+        importBackup,
+        importFile,
+    } = useImport({
+        t,
+        showAlert,
+        router,
+        db,
+    })
+    const {
+        loading: exportLoading,
+        exportDirectory,
+        pickDirectory,
+        exportBackup,
+    } = useExport({
+        t,
+        showAlert,
+        db,
+    })
 
-    const pickFile = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                copyToCacheDirectory: true,
-                type: 'application/json',
-            })
-            if (result.canceled) return
-            setImportFile(result.assets[0])
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('importExport.error.filePicker.title'),
-                t('importExport.error.filePicker.message'),
-                'error'
-            )
-        }
-    }
-
-    const importBackup = async () => {
-        try {
-            setLoading(true)
-
-            if (!importFile) {
-                showAlert(
-                    t('importExport.error.importFile.title'),
-                    t('importExport.error.importFile.message'),
-                    'error'
-                )
-                return
-            }
-            const file = new File(importFile.uri)
-            const backupData = JSON.parse(file.textSync())
-            await mergeBackup(db, backupData)
-            showAlert(
-                t('common.success'),
-                t('importExport.importSuccessMessage'),
-                'success'
-            )
-            router.replace('/home')
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('importExport.error.filePicker.title'),
-                t('importExport.error.filePicker.messsage'),
-                'error'
-            )
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const exportBackup = async () => {
-        try {
-            setLoading(true)
-
-            const data = await getData(db)
-            const jsonString = JSON.stringify(data, null, 2)
-            console.log(jsonString)
-            if (!exportDirectory) {
-                showAlert(
-                    t('importExport.error.exportDirectory.title'),
-                    t('importExport.error.exportDirectory.message'),
-                    'error'
-                )
-                return
-            }
-
-            console.log('creating backup file')
-            const file = exportDirectory.createFile(
-                `palester_backup_${Date.now()}.json`,
-                'application/json'
-            )
-            console.log('writing to backup file')
-            file.write(jsonString)
-            console.log('write done')
-            showAlert(
-                t('common.success'),
-                t('importExport.exportSuccessMessage'),
-                'success'
-            )
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('importExport.error.export.title'),
-                t('importExport.error.export.message'),
-                'error'
-            )
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const pickDirectory = async () => {
-        try {
-            const dir = await Directory.pickDirectoryAsync()
-            if (!dir) return
-            if (dir.exists) {
-                setExportDirectory(new Directory(dir.uri))
-            }
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('importExport.error.export.title'),
-                t('importExport.error.export.message'),
-                'error'
-            )
-        }
-    }
-
-    if (loading) {
+    if (importLoading || exportLoading) {
         return <Loading />
     }
 

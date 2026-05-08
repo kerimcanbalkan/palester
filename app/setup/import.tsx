@@ -13,14 +13,11 @@ import { useState } from 'react'
 import { useRouter } from 'expo-router'
 import { useAlert } from '@/context/AlertContext'
 import CustomText from '@/components/CustomText'
-import { File } from 'expo-file-system/next'
-import * as DocumentPicker from 'expo-document-picker'
 import { useSQLiteContext } from 'expo-sqlite'
-import { mergeBackup } from '@/api/api'
 import CustomModal from '@/components/CustomModal'
 import Loading from '@/components/Loading'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useTranslation } from '@/localization/useTranslation'
+import { useImport } from '@/lib/hooks/use-import'
 
 export default function Import() {
     const { t } = useTranslation()
@@ -29,58 +26,14 @@ export default function Import() {
     const styles = themedStyles(colors)
     const router = useRouter()
     const { showAlert } = useAlert()
-    const [importFile, setImportFile] =
-        useState<DocumentPicker.DocumentPickerAsset | null>(null)
     const [importModal, setImportModal] = useState(false)
-    const [loading, setLoading] = useState(false)
     const db = useSQLiteContext()
-
-    const pickFile = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                copyToCacheDirectory: true,
-                type: 'application/json',
-            })
-            if (result.canceled) return
-            setImportFile(result.assets[0])
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('setupImport.error.filePicker.title'),
-                t('setupImport.error.filePicker.message'),
-                'error'
-            )
-        }
-    }
-
-    const importBackup = async () => {
-        try {
-            setLoading(true)
-
-            if (!importFile) {
-                showAlert(
-                    t('setupImport.error.importFile.title'),
-                    t('setupImport.error.importFile.message'),
-                    'error'
-                )
-                return
-            }
-            const file = new File(importFile.uri)
-            const backupData = JSON.parse(file.textSync())
-            await mergeBackup(db, backupData)
-            await AsyncStorage.setItem('setup_done', 'true')
-            router.replace('/home')
-        } catch (err) {
-            console.error(err)
-            showAlert(
-                t('setupImport.error.filePicker.title'),
-                t('setupImport.error.filePicker.message'),
-                'error'
-            )
-        } finally {
-            setLoading(false)
-        }
-    }
+    const { loading, pickFile, importBackup, importFile } = useImport({
+        showAlert,
+        t,
+        router,
+        db,
+    })
 
     if (loading) {
         return <Loading />
