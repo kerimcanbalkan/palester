@@ -28,7 +28,8 @@ export default function Home() {
     const { showAlert } = useAlert()
     const [logOpen, setLogOpen] = useState(false)
     const db = useSQLiteContext()
-    const { data, loading, error, sessionToday, workoutToday } = useAppData()
+    const { data, loading, error, sessionToday, workoutToday, refetch } =
+        useAppData()
 
     const { t } = useTranslation()
 
@@ -40,6 +41,7 @@ export default function Home() {
                 t('workoutLog.successMessage'),
                 'success'
             )
+            refetch()
         } catch (err) {
             console.error('error while adding workout', err)
             showAlert(
