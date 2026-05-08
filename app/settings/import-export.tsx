@@ -76,6 +76,7 @@ export default function ImportExport() {
                 <CustomButton
                     text={t('importExport.importButton')}
                     size={20}
+                    disabled={!importFile}
                     onPress={() => setImportModal(true)}
                 />
             </View>
@@ -99,6 +100,7 @@ export default function ImportExport() {
                     text={t('importExport.exportButton')}
                     size={20}
                     onPress={() => setExportModal(true)}
+                    disabled={!exportDirectory}
                 />
             </View>
             <CustomModal
