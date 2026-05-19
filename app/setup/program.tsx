@@ -2,25 +2,16 @@ import { View, StyleSheet, useColorScheme } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import Logo from '@/components/Logo'
 import CustomButton from '@/components/CustomButton'
-import { useState } from 'react'
 import DayButton from '@/components/DayButton'
 import { useRouter } from 'expo-router'
 import { useAlert } from '@/context/AlertContext'
-import { initData, Session, TrainingProgram } from '@/api/api'
+import { initData } from '@/api/api'
 import CustomText from '@/components/CustomText'
 import { useSQLiteContext } from 'expo-sqlite'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import SessionModal from '@/components/SessionModal'
 import { useTranslation } from '@/localization/useTranslation'
-import { enUS, tr, sq } from 'date-fns/locale'
-import {
-    startOfToday,
-    eachDayOfInterval,
-    format,
-    startOfWeek,
-    endOfWeek,
-} from 'date-fns'
-import i18n from '@/localization/i18n'
+import { useProgram } from '@/lib/hooks/use-program'
 
 export default function Program() {
     const { t } = useTranslation()
@@ -30,61 +21,15 @@ export default function Program() {
     const router = useRouter()
     const db = useSQLiteContext()
     const { showAlert } = useAlert()
-
-    const [trainingProgram, setTrainingProgram] = useState<TrainingProgram>({
-        date: startOfToday().toISOString(),
-        sessions: [],
-    })
-    const localeMapping = {
-        en: enUS,
-        tr: tr,
-        sq: sq,
-    }
-    const currentLocale =
-        localeMapping[i18n.locale as keyof typeof localeMapping] || enUS
-
-    const today = startOfToday()
-    const days = eachDayOfInterval({
-        start: startOfWeek(today, { locale: currentLocale }),
-        end: endOfWeek(today, { locale: currentLocale }),
-    }).map((day) => format(day, 'EEE').toLowerCase())
-
-    const daysLocale = eachDayOfInterval({
-        start: startOfWeek(today, { locale: currentLocale }),
-        end: endOfWeek(today, { locale: currentLocale }),
-    }).map((day) => format(day, 'EEE', { locale: currentLocale }))
-
-    const [activeDay, setActiveDay] = useState<string | null>(null)
-
-    const handleSaveSession = (session: Session) => {
-        setTrainingProgram((prev) => {
-            const existingIndex = prev.sessions.findIndex(
-                (s) => s.day === session.day
-            )
-
-            if (existingIndex >= 0) {
-                const updated = [...prev.sessions]
-                updated[existingIndex] = session
-                return { ...prev, sessions: updated }
-            }
-
-            return {
-                ...prev,
-                sessions: [...prev.sessions, session],
-            }
-        })
-    }
-
-    const handleDeleteSession = (session: Session) => {
-        setTrainingProgram((prev) => {
-            return {
-                ...prev,
-                sessions: prev.sessions.filter(
-                    (s: Session) => s.day !== session.day
-                ),
-            }
-        })
-    }
+    const {
+        trainingProgram,
+        handleSaveSession,
+        handleDeleteSession,
+        daysLocale,
+        days,
+        activeDay,
+        setActiveDay,
+    } = useProgram()
 
     const handleSaveTrainingProgram = async () => {
         if (trainingProgram.sessions.length === 0) {
