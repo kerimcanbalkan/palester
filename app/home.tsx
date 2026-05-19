@@ -9,92 +9,29 @@ import Logo from '@/components/Logo'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
 import CustomButton from '@/components/CustomButton'
 import Calendar from '@/components/calendar/Calendar'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSQLiteContext } from 'expo-sqlite'
-import { getData, AppData, addWorkout, Session, Workout } from '@/api/api'
+import { addWorkout, Workout } from '@/api/api'
 import Loading from '@/components/Loading'
 import { useAlert } from '@/context/AlertContext'
-import { format, isSameDay, startOfToday } from 'date-fns'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link } from 'expo-router'
 import CustomText from '@/components/CustomText'
 import WorkoutLogModal from '@/components/WorkoutLogModal'
 import { useTranslation } from '@/localization/useTranslation'
+import { useAppData } from '@/lib/hooks/use-app-data'
 
 export default function Home() {
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
     const styles = themedStyles(colors)
-    const db = useSQLiteContext()
     const { showAlert } = useAlert()
-
-    const [data, setData] = useState<AppData | null>(null)
     const [logOpen, setLogOpen] = useState(false)
-    const [error, setError] = useState(false)
-    const [loading, setLoading] = useState(true)
-
-    const today = startOfToday()
-    const todayName = format(today, 'EEE').toLocaleLowerCase()
-    const [sessionToday, setSessionToday] = useState<Session>({
-        day: todayName,
-        lifts: [],
-    })
-    const [workoutToday, setWorkoutToday] = useState<Workout | null>(null)
+    const db = useSQLiteContext()
+    const { data, loading, error, sessionToday, workoutToday, refetch } =
+        useAppData()
 
     const { t } = useTranslation()
-
-    const fetchData = async () => {
-        try {
-            const data = await getData(db)
-            return data
-        } catch (error) {
-            throw new Error(`Failed to fetch app data: ${error}`)
-        }
-    }
-
-    useEffect(() => {
-        const getUserData = async () => {
-            setLoading(true)
-            setError(false)
-            try {
-                // Get app data
-                const appData: AppData | null = await fetchData()
-                if (!appData) {
-                    throw new Error('App data is null')
-                }
-                setData(appData)
-
-                // Set todays session
-                const session = appData.programs[
-                    appData.programs.length - 1
-                ].sessions.find((s) => s.day === todayName)
-                console.log(
-                    'programs',
-                    appData.programs[appData.programs.length - 1].sessions
-                )
-                if (!session) {
-                    setSessionToday({ day: todayName, lifts: [] })
-                    return
-                }
-                setSessionToday(session)
-
-                // Check if logged workout exists
-                const workout = appData.workouts.find((w) =>
-                    isSameDay(today, w.date)
-                )
-                if (!workout) return
-                setWorkoutToday(workout)
-            } catch (error) {
-                setError(true)
-                console.error('Error getting user data: ', error)
-            } finally {
-                console.log(sessionToday)
-                setLoading(false)
-            }
-        }
-
-        getUserData()
-    }, [])
 
     async function handleWorkoutLog(workout: Workout) {
         try {
@@ -104,8 +41,7 @@ export default function Home() {
                 t('workoutLog.successMessage'),
                 'success'
             )
-            const data = await fetchData()
-            setData(data)
+            refetch()
         } catch (err) {
             console.error('error while adding workout', err)
             showAlert(

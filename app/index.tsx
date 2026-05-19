@@ -1,39 +1,13 @@
 import CustomText from '@/components/CustomText'
 import Loading from '@/components/Loading'
-import { initI18n } from '@/localization/i18n'
+import { useSetup } from '@/lib/hooks/use-setup'
 import { darkColors, lightColors } from '@/theme/colors'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
 import { View, useColorScheme } from 'react-native'
 
 export default function Index() {
-    const router = useRouter()
     const colorScheme = useColorScheme()
     const colors = colorScheme === 'light' ? lightColors : darkColors
-    const [error, setError] = useState(false)
-
-    // Redirect if setup is not done
-    useEffect(() => {
-        const checkSetup = async () => {
-            try {
-                const setupDone = await AsyncStorage.getItem('setup_done')
-                if (!setupDone) {
-                    router.replace('/setup/import')
-                } else {
-                    router.replace('/home')
-                }
-            } catch (err) {
-                console.error('error checking setup', err)
-                setError(true)
-            }
-        }
-        const checkLanguage = async () => {
-            await initI18n()
-        }
-        checkLanguage()
-        checkSetup()
-    }, [])
+    const { error } = useSetup()
 
     if (error) {
         return (
