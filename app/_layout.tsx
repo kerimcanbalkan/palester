@@ -52,8 +52,7 @@ export default function RootLayout() {
         await db.execAsync(`
       CREATE TABLE IF NOT EXISTS app_data (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        gym_location TEXT,
-        programs TEXT,
+        sessions TEXT,
         workouts TEXT
       );
     `)
@@ -99,7 +98,6 @@ function themedStyles(colors: colorType) {
             maxWidth: 430,
             height: '100%',
             margin: 'auto',
-            alignSelf: 'center',
         },
     })
 }

@@ -47,6 +47,7 @@ function themedStyles(colors: colorType) {
             padding: 10,
             borderWidth: 1,
             borderColor: colors.fg,
+            borderRadius: 4,
             margin: 10,
             textAlign: 'center',
         },

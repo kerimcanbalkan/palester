@@ -11,7 +11,7 @@ import {
     FlatList,
 } from 'react-native'
 import CustomText from './CustomText'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { enUS, tr, sq } from 'date-fns/locale'
 import i18n from '@/localization/i18n'
 
@@ -21,16 +21,17 @@ interface ModalProps {
     onClose: () => void
 }
 
+const localeMapping = {
+    en: enUS,
+    tr: tr,
+    sq: sq,
+}
+
 export default function WorkoutModal({
     visible,
     workout,
     onClose,
 }: ModalProps) {
-    const localeMapping = {
-        en: enUS,
-        tr: tr,
-        sq: sq,
-    }
     const currentLocale =
         localeMapping[i18n.locale as keyof typeof localeMapping] || enUS
     const colorScheme = useColorScheme()
@@ -38,58 +39,125 @@ export default function WorkoutModal({
     const styles = themedStyles(colors)
 
     const [contentHeight, setContentHeight] = useState(0)
-    const MAX_SCROLL_HEIGHT = 300
+    const MAX_SCROLL_HEIGHT = 340
     const scrollHeight = Math.min(contentHeight, MAX_SCROLL_HEIGHT)
 
-    const handleClose = () => {
-        onClose()
-    }
+    const formattedDate = format(parseISO(workout.date), 'dd LLLL yyyy', {
+        locale: currentLocale,
+    })
 
     return (
-        <Modal transparent visible={visible} animationType="slide">
+        <Modal
+            transparent
+            visible={visible}
+            animationType="fade"
+            onRequestClose={onClose}
+            statusBarTranslucent
+        >
             <View style={styles.overlay}>
                 <View style={styles.sheet}>
-                    <Pressable onPress={handleClose} style={styles.close}>
-                        <Ionicons name="close" size={32} color={colors.fg} />
-                    </Pressable>
-                    <CustomText style={styles.date}>
-                        {format(workout.date, 'dd LLLL yyyy', {
-                            locale: currentLocale,
-                        })}
-                    </CustomText>
+                    <View style={styles.headerRow}>
+                        <View style={styles.iconSpacer} />
+
+                        <View style={styles.titleBlock}>
+                            <CustomText style={styles.title} numberOfLines={2}>
+                                {workout.sessionName ?? formattedDate}
+                            </CustomText>
+                            {workout.sessionName ? (
+                                <View style={styles.dateRow}>
+                                    <Ionicons
+                                        name="calendar-outline"
+                                        size={13}
+                                        color={colors.fg}
+                                    />
+                                    <CustomText style={styles.subtitle}>
+                                        {formattedDate}
+                                    </CustomText>
+                                </View>
+                            ) : null}
+                        </View>
+
+                        <Pressable
+                            onPress={onClose}
+                            hitSlop={12}
+                            style={({ pressed }) => [
+                                styles.iconButton,
+                                pressed && styles.pressed,
+                            ]}
+                        >
+                            <Ionicons
+                                name="close"
+                                size={22}
+                                color={colors.fg}
+                            />
+                        </Pressable>
+                    </View>
+
+                    <View style={styles.divider} />
+
                     <FlatList
                         data={workout.lifts}
-                        style={{
-                            maxHeight: scrollHeight,
-                        }}
-                        contentContainerStyle={{
-                            borderWidth: 1,
-                            borderColor: colors.fg,
-                            padding: 10,
-                            alignContent: 'center',
-                        }}
+                        style={{ maxHeight: scrollHeight }}
+                        showsVerticalScrollIndicator={false}
+                        ItemSeparatorComponent={() => (
+                            <View style={{ height: 10 }} />
+                        )}
                         keyExtractor={(item) => item.id.toString()}
-                        keyboardShouldPersistTaps="handled"
-                        onContentSizeChange={(_, h) => {
-                            setContentHeight(h)
-                        }}
-                        renderItem={({ item }) => {
+                        onContentSizeChange={(_, h) => setContentHeight(h)}
+                        renderItem={({ item, index }) => {
                             const quantity =
                                 item.quantity.type === 'reps'
                                     ? item.quantity.reps.toString()
                                     : item.quantity.seconds.toString() + 's'
+
+                            const hasWeight =
+                                item.weight &&
+                                Number.isFinite(item.weight.weight)
+
                             return (
-                                <View style={styles.container}>
-                                    <CustomText style={styles.lift}>
-                                        {item.name}
-                                    </CustomText>
-                                    <CustomText style={styles.lift}>
-                                        {item.sets}x{quantity}
-                                    </CustomText>
-                                    <CustomText style={styles.lift}>
-                                        {item.weight?.weight}{' '}
-                                        {item.weight?.unit}
-                                    </CustomText>
+                                <View style={styles.card}>
+                                    <View style={styles.badge}>
+                                        <CustomText style={styles.badgeText}>
+                                            {index + 1}
+                                        </CustomText>
+                                    </View>
+
+                                    <View style={styles.liftInfo}>
+                                        <CustomText
+                                            style={styles.liftName}
+                                            numberOfLines={2}
+                                        >
+                                            {item.name}
+                                        </CustomText>
+                                        <View style={styles.chip}>
+                                            <CustomText style={styles.chipText}>
+                                                {item.sets} × {quantity}
+                                            </CustomText>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.weightBlock}>
+                                        {hasWeight ? (
+                                            <>
+                                                <CustomText
+                                                    style={styles.weightValue}
+                                                >
+                                                    {item.weight!.weight}
+                                                </CustomText>
+                                                <CustomText
+                                                    style={styles.weightUnit}
+                                                >
+                                                    {item.weight!.unit}
+                                                </CustomText>
+                                            </>
+                                        ) : (
+                                            <CustomText
+                                                style={styles.weightEmpty}
+                                            >
+                                                —
+                                            </CustomText>
+                                        )}
+                                    </View>
                                 </View>
                             )
                         }}
@@ -106,45 +174,137 @@ function themedStyles(colors: colorType) {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            paddingHorizontal: 16,
             backgroundColor: colors.modalBg,
         },
         sheet: {
-            backgroundColor: colors.bg2,
-            borderRadius: 10,
-            padding: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            shadowColor: colors.bg,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 4,
-        },
-        scrollContent: {
-            width: '80%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 5,
-        },
-        close: {
-            alignSelf: 'flex-end',
-        },
-        date: {
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginVertical: 10,
-        },
-        container: {
             width: '100%',
+            maxWidth: 520,
+            backgroundColor: colors.bg2,
+            borderRadius: 16,
+            padding: 20,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.2,
+            shadowRadius: 16,
+            elevation: 12,
+        },
+
+        // Header
+        headerRow: {
             flexDirection: 'row',
             alignItems: 'center',
+            gap: 12,
+        },
+        iconButton: {
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.bg,
+        },
+        iconSpacer: {
+            width: 36,
+            height: 36,
+        },
+        titleBlock: {
+            flex: 1,
+            alignItems: 'center',
+        },
+        title: {
+            color: colors.fg,
+            fontSize: 20,
+            fontWeight: 'bold',
+            textAlign: 'center',
+        },
+        dateRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 5,
+            marginTop: 4,
+            opacity: 0.65,
+        },
+        subtitle: {
+            color: colors.fg,
+            fontSize: 13,
+        },
+        divider: {
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: colors.fg,
+            opacity: 0.2,
+            marginVertical: 18,
+        },
+
+        // Lift card
+        card: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+            backgroundColor: colors.bg,
+            borderRadius: 12,
+            padding: 14,
+        },
+        badge: {
+            width: 28,
+            height: 28,
+            borderRadius: 14,
+            backgroundColor: colors.fg,
+            alignItems: 'center',
             justifyContent: 'center',
         },
-        lift: {
+        badgeText: {
+            color: colors.bg,
+            fontSize: 13,
+            fontWeight: '700',
+        },
+        liftInfo: {
+            flex: 1,
+            gap: 6,
+            alignItems: 'flex-start',
+        },
+        liftName: {
+            color: colors.fg,
+            fontSize: 16,
+            fontWeight: '600',
+        },
+        chip: {
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: colors.fg,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+            opacity: 0.7,
+        },
+        chipText: {
+            color: colors.fg,
+            fontSize: 12,
+            fontWeight: '600',
+        },
+        weightBlock: {
+            flexDirection: 'row',
+            alignItems: 'baseline',
+            gap: 3,
+            minWidth: 64,
+            justifyContent: 'flex-end',
+        },
+        weightValue: {
+            color: colors.fg,
+            fontSize: 20,
+            fontWeight: '700',
+        },
+        weightUnit: {
+            color: colors.fg,
+            fontSize: 13,
+            opacity: 0.65,
+        },
+        weightEmpty: {
+            color: colors.fg,
             fontSize: 18,
-            marginVertical: 5,
-            width: '33.3%',
-            textAlign: 'center',
+            opacity: 0.5,
+        },
+        pressed: {
+            opacity: 0.7,
         },
     })
 }

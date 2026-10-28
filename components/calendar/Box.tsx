@@ -7,11 +7,7 @@ export enum Variant {
     today,
     future,
     completed,
-    rest,
-    missed,
     oldCompleted,
-    oldRest,
-    oldMissed,
 }
 
 interface Props {
@@ -30,13 +26,9 @@ export default function Box({ date, variant, onPress }: Props) {
             style={[
                 styles.container,
                 variant === Variant.completed && styles.completed,
-                variant === Variant.rest && styles.rest,
-                variant === Variant.missed && styles.missed,
                 variant === Variant.future && styles.future,
                 variant === Variant.regular && styles.regular,
                 variant === Variant.oldCompleted && styles.regular,
-                variant === Variant.oldMissed && styles.regular,
-                variant === Variant.oldRest && styles.regular,
                 today ? styles.today : '',
             ]}
             onPress={() => onPress(date)}
@@ -45,14 +37,10 @@ export default function Box({ date, variant, onPress }: Props) {
                 style={[
                     variant === Variant.today && styles.textFg,
                     variant === Variant.completed && styles.textBg,
-                    variant === Variant.rest && styles.textBg,
-                    variant === Variant.missed && styles.textBg,
                     variant === Variant.future && styles.textFg,
                     variant === Variant.regular && styles.textFg,
 
                     variant === Variant.oldCompleted && styles.textGreen,
-                    variant === Variant.oldRest && styles.textDarkGreen,
-                    variant === Variant.oldMissed && styles.textRed,
                 ]}
             >
                 {format(date, 'd')}
@@ -101,16 +89,8 @@ function themedStyles(colors: colorType) {
             backgroundColor: colors.green,
         },
 
-        rest: {
-            backgroundColor: colors.darkGreen,
-        },
-
         regular: {
             backgroundColor: colors.bg,
-        },
-
-        missed: {
-            backgroundColor: colors.red,
         },
 
         future: {

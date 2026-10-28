@@ -1,9 +1,8 @@
-import { startOfToday } from 'date-fns'
 import { SQLiteDatabase } from 'expo-sqlite'
 
 export type AppDataSQL = {
     id: number
-    programs: string
+    sessions: string
     workouts: string
 }
 
@@ -25,44 +24,55 @@ export type Lift = {
 }
 
 export type Session = {
-    day: string
+    name: string
     lifts: Lift[]
-}
-
-export type TrainingProgram = {
-    date: string
-    sessions: Session[]
 }
 
 export type Workout = {
     date: string
+    sessionName?: string
     lifts: Lift[]
 }
 
 export type AppData = {
     id: number
-    programs: TrainingProgram[]
+    sessions: Session[]
     workouts: Workout[]
 }
 
+const ROW_ID = 1
+
 export async function initData(db: SQLiteDatabase, data: AppData) {
     await db.runAsync(
-        'INSERT INTO app_data (programs, workouts) VALUES (?, ?)',
-        JSON.stringify(data.programs),
+        `INSERT INTO app_data (id, sessions, workouts) VALUES (?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET
+            sessions = excluded.sessions,
+            workouts = excluded.workouts`,
+        ROW_ID,
+        JSON.stringify(data.sessions),
         JSON.stringify(data.workouts)
     )
 }
 
-export async function getData(db: SQLiteDatabase): Promise<AppData | null> {
-    const result = await db.getAllAsync<AppDataSQL>(
-        'SELECT * FROM app_data LIMIT 1'
+export async function updateSessions(db: SQLiteDatabase, sessions: Session[]) {
+    await db.runAsync(
+        `INSERT INTO app_data (id, sessions, workouts) VALUES (?, ?, '[]')
+         ON CONFLICT(id) DO UPDATE SET sessions = excluded.sessions`,
+        ROW_ID,
+        JSON.stringify(sessions)
     )
-    if (!result.length) return null
+}
 
-    const row = result[0]
+export async function getData(db: SQLiteDatabase): Promise<AppData | null> {
+    const row = await db.getFirstAsync<AppDataSQL>(
+        'SELECT * FROM app_data WHERE id = ?',
+        ROW_ID
+    )
+    if (!row) return null
+
     return {
         id: row.id,
-        programs: JSON.parse(row.programs || '[]'),
+        sessions: JSON.parse(row.sessions || '[]'),
         workouts: JSON.parse(row.workouts || '[]'),
     }
 }
@@ -74,51 +84,23 @@ export async function addWorkout(db: SQLiteDatabase, workout: Workout) {
     const index = workouts.findIndex((w) => w.date === workout.date)
 
     if (index !== -1) {
-        // update existing workout
-        workouts[index] = workout
+        workouts[index] = workout // update existing workout
     } else {
-        // add new workout
-        workouts.push(workout)
+        workouts.push(workout) // add new workout
     }
 
     await db.runAsync(
-        'UPDATE app_data SET workouts = ? WHERE id = 1',
-        JSON.stringify(workouts)
-    )
-}
-export async function addProgram(db: SQLiteDatabase, program: TrainingProgram) {
-    const data = await getData(db)
-    const programs: TrainingProgram[] = data ? [...data.programs] : []
-
-    const newProgram = {
-        ...program,
-        date: startOfToday().toISOString(),
-    }
-
-    programs.push(newProgram)
-
-    await db.runAsync(
-        'UPDATE app_data SET programs = ? WHERE id = 1',
-        JSON.stringify(programs)
+        'UPDATE app_data SET workouts = ? WHERE id = ?',
+        JSON.stringify(workouts),
+        ROW_ID
     )
 }
 
 export async function mergeBackup(db: SQLiteDatabase, backup: AppData) {
-    const existing = await getData(db)
-
-    if (!existing) {
-        await initData(db, backup)
-        return
-    }
-
-    const incomingPrograms = backup.programs ?? []
-    const incomingWorkouts = backup.workouts ?? []
-
-    await db.runAsync(
-        `UPDATE app_data
-         SET programs = ?, workouts = ?
-         WHERE id = 1`,
-        JSON.stringify(incomingPrograms),
-        JSON.stringify(incomingWorkouts)
-    )
+    // initData already inserts-or-replaces row 1
+    await initData(db, {
+        id: ROW_ID,
+        sessions: backup.sessions ?? [],
+        workouts: backup.workouts ?? [],
+    })
 }

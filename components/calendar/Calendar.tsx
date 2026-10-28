@@ -12,7 +12,6 @@ import { AppData } from '@/api/api'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import CustomText from '@/components/CustomText'
 import WorkoutModal from '../WorkoutModal'
-import { useTranslation } from '@/localization/useTranslation'
 import { useCalendar } from './use-calendar'
 
 interface calendarProps {
@@ -20,7 +19,6 @@ interface calendarProps {
 }
 
 export default function Calendar({ data }: calendarProps) {
-    const { t } = useTranslation()
     const {
         getBoxVariant,
         month,
@@ -102,47 +100,6 @@ export default function Calendar({ data }: calendarProps) {
                     })}
                 </View>
             </View>
-            <View style={styles.legendContainer}>
-                <View style={styles.legend}>
-                    <CustomText
-                        style={[
-                            styles.legendBox,
-                            { backgroundColor: colors.green },
-                        ]}
-                    >
-                        {' '}
-                    </CustomText>
-                    <CustomText style={{ color: colors.fg }}>
-                        {t('workoutSummary.done')}
-                    </CustomText>
-                </View>
-                <View style={styles.legend}>
-                    <CustomText
-                        style={[
-                            styles.legendBox,
-                            { backgroundColor: colors.darkGreen },
-                        ]}
-                    >
-                        {' '}
-                    </CustomText>
-                    <CustomText style={{ color: colors.fg }}>
-                        {t('workoutSummary.rest')}
-                    </CustomText>
-                </View>
-                <View style={styles.legend}>
-                    <CustomText
-                        style={[
-                            styles.legendBox,
-                            { backgroundColor: colors.red },
-                        ]}
-                    >
-                        {' '}
-                    </CustomText>
-                    <CustomText style={{ color: colors.fg }}>
-                        {t('workoutSummary.missed')}
-                    </CustomText>
-                </View>
-            </View>
             {activeWorkout && (
                 <WorkoutModal
                     visible={workoutModal}
@@ -206,26 +163,5 @@ function themedStyles(colors: colorType) {
             textTransform: 'uppercase',
             fontSize: 18,
         } as TextStyle,
-
-        legendBox: {
-            borderRadius: 5,
-            aspectRatio: 1,
-            width: 15,
-            height: 15,
-        },
-
-        legendContainer: {
-            flexDirection: 'row',
-            gap: 20,
-            width: '100%',
-            marginTop: 10,
-        },
-
-        legend: {
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 3,
-        },
     })
 }

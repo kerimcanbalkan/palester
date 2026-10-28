@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Router, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { initI18n } from '@/localization/i18n'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 

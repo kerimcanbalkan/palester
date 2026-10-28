@@ -28,8 +28,7 @@ export default function Home() {
     const { showAlert } = useAlert()
     const [logOpen, setLogOpen] = useState(false)
     const db = useSQLiteContext()
-    const { data, loading, error, sessionToday, workoutToday, refetch } =
-        useAppData()
+    const { data, loading, error, workoutToday, refetch } = useAppData()
 
     const { t } = useTranslation()
 
@@ -70,7 +69,6 @@ export default function Home() {
                         style={{
                             fontSize: 120,
                             textAlign: 'center',
-                            textOverflow: 'visible',
                             color: colors.fg,
                         }}
                     >
@@ -79,7 +77,6 @@ export default function Home() {
                     <CustomText
                         style={{
                             fontSize: 24,
-                            textOverflow: 'visible',
                             textAlign: 'center',
                             color: colors.fg,
                         }}
@@ -117,9 +114,7 @@ export default function Home() {
                             : t('workoutSummary.log')
                     }
                     onPress={() => {
-                        if (sessionToday.lifts.length !== 0) {
-                            setLogOpen(true)
-                        }
+                        setLogOpen(true)
                     }}
                     size={24}
                 />
@@ -129,7 +124,7 @@ export default function Home() {
                         setLogOpen(false)
                     }}
                     onSave={handleWorkoutLog}
-                    session={sessionToday}
+                    sessions={data?.sessions || []}
                     {...(workoutToday && { workout: workoutToday })}
                 />
             </View>

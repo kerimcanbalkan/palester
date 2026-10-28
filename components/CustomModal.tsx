@@ -1,5 +1,6 @@
 import { useTranslation } from '@/localization/useTranslation'
 import { colorType, darkColors, lightColors } from '@/theme/colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import {
     Modal,
     View,
@@ -30,17 +31,31 @@ export default function CustomModal({
 
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={onClose}
+            statusBarTranslucent
         >
             <View style={styles.container}>
                 <View style={styles.modal}>
+                    <View style={styles.iconCircle}>
+                        <Ionicons
+                            name="help-circle-outline"
+                            size={30}
+                            color={colors.fg}
+                        />
+                    </View>
+
                     <Text style={styles.modalText}>{dialog}</Text>
+
                     <View style={styles.buttonRow}>
                         <Pressable
-                            style={[styles.button, styles.buttonCancel]}
+                            style={({ pressed }) => [
+                                styles.button,
+                                styles.buttonCancel,
+                                pressed && styles.pressed,
+                            ]}
                             onPress={onClose}
                         >
                             <Text style={styles.textStyle}>
@@ -48,7 +63,11 @@ export default function CustomModal({
                             </Text>
                         </Pressable>
                         <Pressable
-                            style={[styles.button, styles.buttonConfirm]}
+                            style={({ pressed }) => [
+                                styles.button,
+                                styles.buttonConfirm,
+                                pressed && styles.pressed,
+                            ]}
                             onPress={() => {
                                 onConfirm()
                                 onClose()
@@ -71,30 +90,52 @@ function themedStyles(colors: colorType) {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            paddingHorizontal: 24,
             backgroundColor: colors.modalBg,
         },
         modal: {
+            width: '100%',
+            maxWidth: 360,
             backgroundColor: colors.bg2,
-            borderRadius: 10,
-            padding: 30,
+            borderRadius: 16,
+            paddingTop: 24,
+            paddingHorizontal: 20,
+            paddingBottom: 20,
             alignItems: 'center',
-            shadowColor: colors.bg,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.2,
+            shadowRadius: 16,
+            elevation: 12,
+        },
+        iconCircle: {
+            width: 52,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: colors.bg,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+        },
+        modalText: {
+            color: colors.fg,
+            fontSize: 16,
+            lineHeight: 22,
+            fontWeight: '500',
+            textAlign: 'center',
+            marginBottom: 24,
         },
         buttonRow: {
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 10,
-            marginTop: 10,
+            gap: 12,
+            width: '100%',
         },
         button: {
+            flex: 1,
+            height: 46,
             borderRadius: 10,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            elevation: 2,
+            alignItems: 'center',
+            justifyContent: 'center',
         },
         buttonConfirm: {
             backgroundColor: colors.green,
@@ -104,13 +145,12 @@ function themedStyles(colors: colorType) {
         },
         textStyle: {
             color: colors.fg,
-            fontWeight: 'bold',
+            fontSize: 15,
+            fontWeight: '600',
             textAlign: 'center',
         },
-        modalText: {
-            marginBottom: 15,
-            textAlign: 'center',
-            color: colors.fg,
+        pressed: {
+            opacity: 0.7,
         },
     })
 }

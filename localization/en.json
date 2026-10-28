@@ -33,10 +33,11 @@
     "program": {
         "title": "Program",
         "question": "Which days will you workout?",
+        "successMessage": "Program updated successfully!",
         "error": {
             "invalidTrainingProgram": {
                 "title": "Invalid Training Program",
-                "message": "You should at least choose 1 workout day!"
+                "message": "You should add at least 1 session!"
             },
             "couldNotSave": {
                 "title": "Error",
@@ -44,7 +45,26 @@
             }
         }
     },
+    "sessions": {
+        "title": "Sessions",
+        "question": "Create the sessions for your program",
+        "add": "Add Session",
+        "empty": "No sessions yet. Add your first one!",
+        "lifts": "lifts",
+        "namePlaceholder": "e.g. Push Day",
+        "error": {
+            "emptyName": {
+                "title": "Invalid Name",
+                "message": "Session name cannot be empty"
+            },
+            "duplicateName": {
+                "title": "Duplicate Name",
+                "message": "A session with this name already exists"
+            }
+        }
+    },
     "session": {
+        "name": "Session Name",
         "error": {
             "invalidSession": {
                 "title": "Invalid session!",
@@ -94,13 +114,15 @@
                 "message": "You should choose export directory before exporting the data"
             },
             "export": {
-                "title": "Expor Error",
+                "title": "Export Error",
                 "message": "Something went wrong while exporting backup file please try again later."
             }
         }
     },
     "workoutLog": {
         "modalQuestion": "Are you sure you want to save workout with these weights?",
+        "selectSession": "Select Session",
+        "noSessions": "You don't have any sessions yet. Create one from your program first.",
         "error": {
             "invalidWorkout": {
                 "title": "Invalid Workout!",
