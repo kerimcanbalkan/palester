@@ -96,9 +96,9 @@ export default function WorkoutLogModal({
         setWorkout((prev) =>
             prev
                 ? {
-                      ...prev,
-                      lifts: prev.lifts.map((l) => (l.id === id ? updated : l)),
-                  }
+                    ...prev,
+                    lifts: prev.lifts.map((l) => (l.id === id ? updated : l)),
+                }
                 : prev
         )
     }
@@ -184,7 +184,7 @@ export default function WorkoutLogModal({
                         >
                             <Ionicons
                                 name="close"
-                                size={22}
+                                size={20}
                                 color={colors.fg}
                             />
                         </Pressable>

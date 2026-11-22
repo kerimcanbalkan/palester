@@ -4,116 +4,138 @@
         "cancel": "Anulo",
         "save": "Ruaj",
         "delete": "Fshi",
-        "skip": "Kaloj",
+        "skip": "Kapërce",
         "update": "Përditëso",
         "success": "Sukses",
         "second": "s"
     },
     "error": {
-        "somethingWentWrong": "Ops! Diçka shkoi gabim."
+        "somethingWentWrong": "Oops! Diçka shkoi keq. Të lutem provo përsëri"
     },
     "lift": {
         "name": "Emri",
         "sets": "Sete",
-        "reps": "Reps"
+        "reps": "Përsëritje"
     },
     "workoutSummary": {
-        "title": "Përmbledhja e Programit",
-        "done": "Përfunduar",
+        "title": "Përmbledhja e stërvitjes",
+        "done": "Kryer",
         "rest": "Pushim",
-        "missed": "Humbur",
-        "log": "Regjistro Stërvitjen",
-        "update": "Përditëso Stërvitjen"
+        "missed": "E humbur",
+        "log": "Ruaj stërvitjen",
+        "update": "Përditëso stërvitjen"
     },
     "modal": {
-        "program": "Ndrysho Programin",
-        "importExport": "Importo / Exporto",
+        "program": "Ndrysho programin",
+        "importExport": "Importo / Eksporto",
         "language": "Gjuha"
     },
     "program": {
         "title": "Programi",
-        "question": "Në cilët ditë do të shkoni në palestër?",
+        "question": "Në cilat ditë do të stërvitesh?",
+        "successMessage": "Programi u përditësua me sukses!",
         "error": {
             "invalidTrainingProgram": {
-                "title": "Program i Pavlefshëm",
-                "message": "Duhet të zgjidhni të paktën 1 ditë stërvitjeje!"
+                "title": "Program stërvitjeje i pavlefshëm",
+                "message": "Duhet të shtosh të paktën 1 seancë!"
             },
             "couldNotSave": {
                 "title": "Gabim",
-                "message": "Diçka shkoi gabim! Nuk mund të ruhet programi i ri."
+                "message": "Diçka shkoi keq! Programi i ri nuk u ruajt"
+            }
+        }
+    },
+    "sessions": {
+        "title": "Seancat",
+        "question": "Krijo seancat për programin tënd",
+        "add": "Shto seancë",
+        "empty": "Ende nuk ka seanca. Shto të parën!",
+        "lifts": "ushtrime",
+        "namePlaceholder": "p.sh. Dita e gjoksit",
+        "error": {
+            "emptyName": {
+                "title": "Emër i pavlefshëm",
+                "message": "Emri i seancës nuk mund të jetë bosh"
+            },
+            "duplicateName": {
+                "title": "Emër i dyfishtë",
+                "message": "Ekziston tashmë një seancë me këtë emër"
             }
         }
     },
     "session": {
+        "name": "Emri i seancës",
         "error": {
             "invalidSession": {
-                "title": "Sesioni i pavlefshëm!",
-                "message": "Rregulloni fushat e shënuara."
+                "title": "Seancë e pavlefshme!",
+                "message": "Rregullo fushat e theksuara"
             }
         }
     },
     "setupImport": {
         "title": "Importo",
-        "question": "A keni të dhëna rezervë?",
-        "pickFile": "Zgjidh Skedarin",
+        "question": "A ke skedar rezervë?",
+        "pickFile": "Zgjidh skedarin",
         "import": "Importo",
-        "dialog": "A jeni i sigurt që dëshironi të importoni këtë skedar rezervë?",
+        "dialog": "Dëshiron vërtet ta importosh këtë skedar rezervë?",
         "error": {
             "filePicker": {
-                "title": "Gabim te Zgjedhësi i Skedarëve",
-                "message": "Diçka shkoi gabim gjatë zgjedhjes së skedarit rezervë. Ju lutem provoni më vonë."
+                "title": "Gabim në zgjedhjen e skedarit",
+                "message": "Diçka shkoi keq gjatë zgjedhjes së skedarit rezervë, të lutem provo përsëri më vonë."
             },
             "importFile": {
-                "title": "Gabim te Skedari i Importimit",
-                "message": "Duhet të zgjidhni një skedar përpara se të provoni të importoni të dhënat."
+                "title": "Gabim në importimin e skedarit",
+                "message": "Duhet të zgjedhësh një skedar rezervë para se të importosh të dhënat."
             }
         }
     },
     "importExport": {
-        "importTitle": "Importo të Dhënat",
+        "importTitle": "Importo të dhënat e aplikacionit",
         "importButton": "Importo",
-        "pickFile": "Zgjidh Skedarin",
-        "exportTitle": "Eksporto të Dhënat",
-        "pickDirectory": "Zgjidh Dosjen",
+        "pickFile": "Zgjidh skedarin",
+        "exportTitle": "Eksporto të dhënat e aplikacionit",
+        "pickDirectory": "Zgjidh dosjen",
         "exportButton": "Eksporto",
-        "importDialog": "A jeni të sigurt që dëshironi të importoni të dhënat e aplikacionit? Të gjitha të dhënat ekzistuese do të zëvendësohen me të dhënat e kopjes rezervë.",
-        "exportDialog": "A jeni të sigurt që dëshironi të eksportoni të dhënat e aplikacionit?",
+        "importDialog": "Dëshiron vërtet të importosh të dhënat e aplikacionit? Të gjitha të dhënat ekzistuese do të zëvendësohen me të dhënat rezervë.",
+        "exportDialog": "Dëshiron vërtet të eksportosh të dhënat e aplikacionit?",
         "importSuccessMessage": "Të dhënat u importuan me sukses!",
         "exportSuccessMessage": "Të dhënat u eksportuan me sukses!",
         "error": {
             "filePicker": {
-                "title": "Gabim në Zgjedhjen e Skedarit",
-                "message": "Diçka shkoi keq gjatë zgjedhjes së skedarit të kopjes rezervë, ju lutemi provoni përsëri më vonë."
+                "title": "Gabim në zgjedhjen e skedarit",
+                "message": "Diçka shkoi keq gjatë zgjedhjes së skedarit rezervë, të lutem provo përsëri më vonë."
             },
             "importFile": {
-                "title": "Gabim në Skedarin e Importit",
-                "message": "Duhet të zgjidhni një skedar përpara se të importoni të dhënat."
+                "title": "Gabim në importimin e skedarit",
+                "message": "Duhet të zgjedhësh një skedar rezervë para se të importosh të dhënat"
             },
             "exportDirectory": {
-                "title": "Gabim në Dosjen e Eksportit",
-                "message": "Duhet të zgjidhni një dosje përpara se të eksportoni të dhënat."
+                "title": "Gabim në dosjen e eksportimit",
+                "message": "Duhet të zgjedhësh një dosje para se të eksportosh të dhënat"
             },
             "export": {
-                "title": "Gabim në Eksportim",
-                "message": "Diçka shkoi keq gjatë eksportimit të skedarit të kopjes rezervë, ju lutemi provoni përsëri më vonë."
+                "title": "Gabim në eksportim",
+                "message": "Diçka shkoi keq gjatë eksportimit të skedarit rezervë, të lutem provo përsëri më vonë."
             }
         }
     },
     "workoutLog": {
-        "modalQuestion": "A jeni i sigurt që dëshironi të ruani stërvitjen me këto peshë?",
+        "modalQuestion": "Dëshiron vërtet ta ruash stërvitjen me këto pesha?",
+        "selectSession": "Zgjidh seancën",
+        "noSessions": "Ende nuk ke asnjë seancë. Krijo një fillimisht nga programi yt.",
         "error": {
             "invalidWorkout": {
                 "title": "Stërvitje e pavlefshme!",
-                "message": "Ju lutem vendosni peshë të vlefshme për çdo stërvitje!"
+                "message": "Të lutem shkruaj një peshë të vlefshme për çdo ushtrim!"
             },
             "couldNotSave": {
                 "title": "Gabim",
-                "message": "Diçka shkoi keq! Stërvitja nuk u ruajt, ju lutem provoni përsëri më vonë."
+                "message": "Diçka shkoi keq! Stërvitja nuk u ruajt, të lutem provo përsëri më vonë"
             }
         },
         "successMessage": "Stërvitja u ruajt me sukses!"
     },
     "language": {
-        "title": "Zgjidh Gjuhe"
+        "title": "Zgjidh gjuhën"
     }
 }

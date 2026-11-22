@@ -132,6 +132,7 @@ export default function SessionModal({
     const nameInvalid = visualValidation && session.name.trim() === ''
 
     return (
+
         <Modal
             transparent
             visible={visible}
@@ -141,7 +142,7 @@ export default function SessionModal({
         >
             <KeyboardAvoidingView
                 style={styles.overlay}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                behavior="padding"
             >
                 <View style={styles.sheet}>
                     {/* Header */}

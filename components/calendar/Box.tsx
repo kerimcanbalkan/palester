@@ -26,6 +26,7 @@ export default function Box({ date, variant, onPress }: Props) {
             style={[
                 styles.container,
                 variant === Variant.completed && styles.completed,
+                variant === Variant.oldCompleted && styles.regular,
                 variant === Variant.future && styles.future,
                 variant === Variant.regular && styles.regular,
                 variant === Variant.oldCompleted && styles.regular,
@@ -37,6 +38,7 @@ export default function Box({ date, variant, onPress }: Props) {
                 style={[
                     variant === Variant.today && styles.textFg,
                     variant === Variant.completed && styles.textBg,
+                    variant === Variant.oldCompleted && styles.textGreen,
                     variant === Variant.future && styles.textFg,
                     variant === Variant.regular && styles.textFg,
 

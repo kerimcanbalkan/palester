@@ -47,6 +47,7 @@ function themedStyles(colors: colorType, size: number, disabled?: boolean) {
             fontSize: size,
             fontFamily: 'OpenSans_700Bold',
             textTransform: 'uppercase',
+            textAlign: 'center',
             color: colors.bg,
             paddingHorizontal: 10,
             overflow: 'visible',

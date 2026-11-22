@@ -1,7 +1,7 @@
 {
     "common": {
         "ok": "Tamam",
-        "cancel": "Iptal",
+        "cancel": "İptal",
         "save": "Kaydet",
         "delete": "Sil",
         "skip": "Atla",
@@ -10,19 +10,19 @@
         "second": "sn"
     },
     "error": {
-        "somethingWentWrong": "Tüh! Bir şeyler yanlış gitti."
+        "somethingWentWrong": "Hay aksi! Bir şeyler ters gitti. Lütfen tekrar dene"
     },
     "lift": {
-        "name": "isim",
-        "sets": "set",
-        "reps": "tekrar"
+        "name": "Ad",
+        "sets": "Set",
+        "reps": "Tekrar"
     },
     "workoutSummary": {
         "title": "Antrenman Özeti",
         "done": "Tamamlandı",
         "rest": "Dinlenme",
-        "missed": "Kaçtı",
-        "log": "Antrenman Kaydet",
+        "missed": "Kaçırıldı",
+        "log": "Antrenmanı Kaydet",
         "update": "Antrenmanı Güncelle"
     },
     "modal": {
@@ -32,83 +32,105 @@
     },
     "program": {
         "title": "Program",
-        "question": "Hangi günler spor salonuna gideceksiniz?",
+        "question": "Hangi günler antrenman yapacaksın?",
+        "successMessage": "Program başarıyla güncellendi!",
         "error": {
             "invalidTrainingProgram": {
                 "title": "Geçersiz Antrenman Programı",
-                "message": "En az 1 antrenman günü seçmelisiniz!"
+                "message": "En az 1 seans eklemelisin!"
             },
             "couldNotSave": {
                 "title": "Hata",
-                "message": "Bir şeyler yanlış gitti! Yeni program kaydedilemedi."
+                "message": "Bir şeyler ters gitti! Yeni program kaydedilemedi"
+            }
+        }
+    },
+    "sessions": {
+        "title": "Seanslar",
+        "question": "Programın için seansları oluştur",
+        "add": "Seans Ekle",
+        "empty": "Henüz seans yok. İlkini ekle!",
+        "lifts": "hareket",
+        "namePlaceholder": "örn. Göğüs Günü",
+        "error": {
+            "emptyName": {
+                "title": "Geçersiz Ad",
+                "message": "Seans adı boş olamaz"
+            },
+            "duplicateName": {
+                "title": "Aynı Ad",
+                "message": "Bu adla bir seans zaten var"
             }
         }
     },
     "session": {
+        "name": "Seans Adı",
         "error": {
             "invalidSession": {
-                "title": "Geçersiz antrenman",
-                "message": "Vurgulanan alanları düzeltin."
+                "title": "Geçersiz seans!",
+                "message": "İşaretli alanları düzelt"
             }
         }
     },
     "setupImport": {
-        "title": "İçe Aktarma",
-        "question": "Yedek dosyanız var mı?",
+        "title": "İçe Aktar",
+        "question": "Yedek dosyan var mı?",
         "pickFile": "Dosya Seç",
         "import": "İçe Aktar",
-        "dialog": "Bu yedek dosyasını içe aktarmak istediğinizden emin misiniz?",
+        "dialog": "Bu yedek dosyasını içe aktarmak istediğine emin misin?",
         "error": {
             "filePicker": {
                 "title": "Dosya Seçici Hatası",
-                "message": "Yedek dosyası seçilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+                "message": "Yedek dosyası seçilirken bir şeyler ters gitti, lütfen daha sonra tekrar dene."
             },
             "importFile": {
                 "title": "Dosya İçe Aktarma Hatası",
-                "message": "Verileri içe aktarmadan önce bir dosya seçmelisiniz."
+                "message": "Verileri içe aktarmadan önce bir yedek dosyası seçmelisin."
             }
         }
     },
     "importExport": {
-        "importTitle": "Verileri İçe Aktar",
+        "importTitle": "Uygulama Verilerini İçe Aktar",
         "importButton": "İçe Aktar",
         "pickFile": "Dosya Seç",
-        "exportTitle": "Verileri Dışa Aktar",
+        "exportTitle": "Uygulama Verilerini Dışa Aktar",
         "pickDirectory": "Klasör Seç",
         "exportButton": "Dışa Aktar",
-        "importDialog": "Uygulama verilerini içe aktarmak istediğinizden emin misiniz? Mevcut tüm veriler, yedek verilerle değiştirilecektir.",
-        "exportDialog": "Uygulama verilerini dışa aktarmak istediğinizden emin misiniz?",
+        "importDialog": "Uygulama verilerini içe aktarmak istediğine emin misin? Mevcut tüm veriler yedekteki verilerle değiştirilecek.",
+        "exportDialog": "Uygulama verilerini dışa aktarmak istediğine emin misin?",
         "importSuccessMessage": "Veriler başarıyla içe aktarıldı!",
         "exportSuccessMessage": "Veriler başarıyla dışa aktarıldı!",
         "error": {
             "filePicker": {
                 "title": "Dosya Seçici Hatası",
-                "message": "Yedekleme dosyası seçilirken bir hata oluştu, lütfen daha sonra tekrar deneyin."
+                "message": "Yedek dosyası seçilirken bir şeyler ters gitti, lütfen daha sonra tekrar dene."
             },
             "importFile": {
-                "title": "İçe Aktarma Dosyası Hatası",
-                "message": "Verileri içe aktarmadan önce bir dosya seçmelisiniz."
+                "title": "Dosya İçe Aktarma Hatası",
+                "message": "Verileri içe aktarmadan önce bir yedek dosyası seçmelisin"
             },
             "exportDirectory": {
                 "title": "Dışa Aktarma Klasörü Hatası",
-                "message": "Verileri dışa aktarmadan önce bir klasör seçmelisiniz."
+                "message": "Verileri dışa aktarmadan önce bir klasör seçmelisin"
             },
             "export": {
                 "title": "Dışa Aktarma Hatası",
-                "message": "Yedekleme dosyası dışa aktarılırken bir hata oluştu, lütfen daha sonra tekrar deneyin."
+                "message": "Yedek dosyası dışa aktarılırken bir şeyler ters gitti, lütfen daha sonra tekrar dene."
             }
         }
     },
     "workoutLog": {
-        "modalQuestion": "Antrenmanı bu ağırlıklarla kaydetmek istediğinizden emin misiniz?",
+        "modalQuestion": "Antrenmanı bu ağırlıklarla kaydetmek istediğine emin misin?",
+        "selectSession": "Seans Seç",
+        "noSessions": "Henüz hiç seansın yok. Önce programından bir seans oluştur.",
         "error": {
             "invalidWorkout": {
                 "title": "Geçersiz Antrenman!",
-                "message": "Lütfen her antrenman için geçerli ağırlık girin!"
+                "message": "Lütfen her hareket için geçerli bir ağırlık gir!"
             },
             "couldNotSave": {
                 "title": "Hata",
-                "message": "Bir şeyler ters gitti! Antrenman kaydedilemedi, lütfen daha sonra tekrar deneyin."
+                "message": "Bir şeyler ters gitti! Antrenman kaydedilemedi, lütfen daha sonra tekrar dene"
             }
         },
         "successMessage": "Antrenman başarıyla kaydedildi!"

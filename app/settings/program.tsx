@@ -7,6 +7,8 @@ import {
     Pressable,
     KeyboardAvoidingView,
     ActivityIndicator,
+    Keyboard,
+    LayoutChangeEvent,
 } from 'react-native'
 import { darkColors, lightColors, colorType } from '@/theme/colors'
 import Logo from '@/components/Logo'
@@ -46,12 +48,47 @@ export default function Program() {
     const [saving, setSaving] = useState(false)
 
     const scrollRef = useRef<ScrollView>(null)
-    // Wait for the keyboard to open, then bring the name input into view
-    const scrollToBottom = () =>
-        setTimeout(
-            () => scrollRef.current?.scrollToEnd({ animated: true }),
-            150
+    const contentRef = useRef<View>(null)
+    const nameRowRef = useRef<View>(null)
+    const viewportHeight = useRef(0)
+
+
+    const [lockedHeight, setLockedHeight] = useState<number | null>(null)
+
+    const onScrollLayout = (e: LayoutChangeEvent) => {
+        const h = e.nativeEvent.layout.height
+        viewportHeight.current = h
+        if (lockedHeight === null && !Keyboard.isVisible()) {
+            setLockedHeight(h)
+        }
+    }
+
+    // Scroll just enough to show the name input above the keyboard
+    const scrollToNameInput = () => {
+        const row = nameRowRef.current
+        const content = contentRef.current
+        if (!row || !content) return
+
+        row.measureLayout(
+            content,
+            (_x, y, _w, h) => {
+                const target = y + h + 20 - viewportHeight.current
+                scrollRef.current?.scrollTo({
+                    y: Math.max(0, target),
+                    animated: true,
+                })
+            },
+            () => { }
         )
+    }
+
+    useEffect(() => {
+        if (!isNaming) return
+        const sub = Keyboard.addListener('keyboardDidShow', () =>
+            setTimeout(scrollToNameInput, 50)
+        )
+        return () => sub.remove()
+    }, [isNaming])
 
     // Load the existing sessions from the database
     useEffect(() => {
@@ -193,10 +230,18 @@ export default function Program() {
             behavior="padding"
         >
             <ScrollView
+                ref={scrollRef}
+                onLayout={onScrollLayout}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
             >
-                <View style={styles.container}>
+                <View
+                    ref={contentRef}
+                    style={[
+                        styles.container,
+                        lockedHeight != null && { minHeight: lockedHeight },
+                    ]}
+                >
                     <Logo size={46} />
 
                     <View style={styles.content}>
@@ -251,14 +296,13 @@ export default function Program() {
                         </View>
 
                         {isNaming ? (
-                            <View style={styles.nameRow}>
+                            <View ref={nameRowRef} style={styles.nameRow}>
                                 <View style={{ flex: 1 }}>
                                     <CustomText style={styles.label}>
                                         {t('session.name')}
                                     </CustomText>
                                     <TextInput
                                         autoFocus
-                                        onFocus={scrollToBottom}
                                         style={[
                                             styles.nameInput,
                                             nameError && styles.inputError,
